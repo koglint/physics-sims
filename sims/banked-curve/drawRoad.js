@@ -56,15 +56,16 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
     labelOffset: 12,
   });
 
-  const forceScale = createForceScaler(Math.min(width, height) * 0.54, 42, 18000, state.scaleVectorsByMagnitude);
-  const normalLength = forceScale(physics.normalForce);
-  const weightLength = forceScale(physics.weight);
-  const frictionLength = forceScale(Math.abs(physics.frictionActualSigned));
-  const centripetalLength = forceScale(physics.centripetalForce);
-  const normalXLength = forceScale(Math.abs(physics.normalForce * Math.sin(angle)));
-  const normalYLength = forceScale(Math.abs(physics.normalForce * Math.cos(angle)));
-  const frictionXLength = forceScale(Math.abs(physics.frictionActualSigned * Math.cos(angle)));
-  const frictionYLength = forceScale(Math.abs(physics.frictionActualSigned * Math.sin(angle)));
+  const mainScale = createForceScaler(Math.min(width, height) * 0.54, 42, 18000, state.scaleVectorsByMagnitude);
+  const componentScale = createForceScaler(Math.min(width, height) * 0.54, 0, 18000, state.scaleVectorsByMagnitude);
+  const normalLength = mainScale(physics.normalForce);
+  const weightLength = mainScale(physics.weight);
+  const frictionLength = mainScale(Math.abs(physics.frictionActualSigned));
+  const centripetalLength = mainScale(physics.centripetalForce);
+  const normalXLength = componentScale(physics.normalForce * Math.sin(angle));
+  const normalYLength = componentScale(physics.normalForce * Math.cos(angle));
+  const frictionXLength = componentScale(Math.abs(physics.frictionActualSigned * Math.cos(angle)));
+  const frictionYLength = componentScale(Math.abs(physics.frictionActualSigned * Math.sin(angle)));
   const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
 
   const normalVector = {
@@ -75,6 +76,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
     x: Math.cos(angle) * frictionLength * frictionDirection,
     y: Math.sin(angle) * frictionLength * frictionDirection,
   };
+  const normalYTip = { x: carCenter.x, y: carCenter.y - normalYLength };
 
   drawConfiguredVector(ctx, carCenter, { x: 0, y: weightLength }, "weight", vectorMeta, "mg");
   drawConfiguredVector(ctx, carCenter, normalVector, "normal", vectorMeta, "FN");
@@ -84,8 +86,8 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   }
 
   if (vectorMeta.normalComponents?.visible) {
-    drawComponentVector(ctx, carCenter, { x: normalXLength, y: 0 }, vectorMeta.normalComponents.color, "FNx");
     drawComponentVector(ctx, carCenter, { x: 0, y: -normalYLength }, vectorMeta.normalComponents.color, "FNy");
+    drawComponentVector(ctx, normalYTip, { x: normalXLength, y: 0 }, vectorMeta.normalComponents.color, "FNx");
     drawAngleArc(ctx, carCenter.x, carCenter.y, Math.max(24, normalLength * 0.28), -Math.PI / 2, -Math.PI / 2 + angle, "θ", {
       labelOffset: 10,
     });

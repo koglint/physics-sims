@@ -4,16 +4,17 @@ import { drawArrow } from "../../shared/vectors.js";
 export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
   const origin = { x: width * 0.44, y: height * 0.63 };
-  const forceScale = createForceScaler(Math.min(width, height) * 0.46, 46, 18000, state.scaleVectorsByMagnitude);
   const angle = physics.thetaRadians;
   const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
-  const normalLength = forceScale(physics.normalForce);
-  const weightLength = forceScale(physics.weight);
-  const frictionLength = forceScale(Math.abs(physics.frictionActualSigned));
-  const normalXLength = forceScale(Math.abs(physics.normalForce * Math.sin(angle)));
-  const normalYLength = forceScale(Math.abs(physics.normalForce * Math.cos(angle)));
-  const frictionXLength = forceScale(Math.abs(physics.frictionActualSigned * Math.cos(angle)));
-  const frictionYLength = forceScale(Math.abs(physics.frictionActualSigned * Math.sin(angle)));
+  const mainScale = createForceScaler(Math.min(width, height) * 0.46, 46, 18000, state.scaleVectorsByMagnitude);
+  const componentScale = createForceScaler(Math.min(width, height) * 0.46, 0, 18000, state.scaleVectorsByMagnitude);
+  const normalLength = mainScale(physics.normalForce);
+  const weightLength = mainScale(physics.weight);
+  const frictionLength = mainScale(Math.abs(physics.frictionActualSigned));
+  const normalXLength = componentScale(physics.normalForce * Math.sin(angle));
+  const normalYLength = componentScale(physics.normalForce * Math.cos(angle));
+  const frictionXLength = componentScale(Math.abs(physics.frictionActualSigned * Math.cos(angle)));
+  const frictionYLength = componentScale(Math.abs(physics.frictionActualSigned * Math.sin(angle)));
 
   ctx.save();
   ctx.fillStyle = "#102a2a";
@@ -41,7 +42,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
 
   if (vectorMeta.normalComponents?.visible) {
     drawComponentVector(ctx, origin, { x: 0, y: -normalYLength }, vectorMeta.normalComponents.color, "FNy");
-    drawComponentVector(ctx, origin, { x: normalXLength, y: 0 }, vectorMeta.normalComponents.color, "FNx");
+    drawComponentVector(ctx, { x: origin.x, y: origin.y - normalYLength }, { x: normalXLength, y: 0 }, vectorMeta.normalComponents.color, "FNx");
   }
 
   if (state.frictionEnabled && vectorMeta.frictionComponents?.visible) {

@@ -16,11 +16,11 @@ export const PHYSICS_DEFAULTS = {
 
 export const RANGE_CONFIG = {
   theta: { min: 0, max: 90, step: 1, unit: "deg" },
-  velocity: { min: 2, max: 45, step: 0.5, unit: "m/s" },
+  velocity: { min: 2, max: 45, step: 0.5, unit: "m.s⁻¹" },
   mass: { min: 500, max: 2500, step: 10, unit: "kg" },
   radius: { min: 15, max: 200, step: 1, unit: "m" },
   mu: { min: 0, max: 1, step: 0.01, unit: "" },
-  g: { min: 1.6, max: 15, step: 0.01, unit: "m/s^2" },
+  g: { min: 1.6, max: 15, step: 0.01, unit: "m.s⁻²" },
 };
 
 export const VECTOR_DEFAULTS = {
@@ -69,6 +69,9 @@ export const PRESETS = {
     velocity: 20,
     mu: 0.8,
     frictionEnabled: true,
+  }),
+  equilibrium: (state) => ({
+    velocity: Math.sqrt(Math.max(0, state.radius * state.g * Math.tan(toRadians(state.theta)))),
   }),
 };
 
