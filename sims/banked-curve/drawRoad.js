@@ -55,11 +55,11 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
 
   drawAngleArc(
     ctx,
-    rightEnd.x - roadLength * 0.02,
-    rightEnd.y - 4,
+    rightEnd.x - roadLength * 0.01,
+    rightEnd.y - 2,
     Math.max(32, roadLength * 0.15),
-    Math.PI - angle,
-    Math.PI,
+    -Math.PI,
+    -Math.PI + angle,
     "θ",
     { labelOffset: 12 },
   );

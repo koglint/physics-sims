@@ -8,13 +8,17 @@ export function createFormulaPanel(state, onApply) {
   const inputsContainer = document.querySelector("#formula-inputs");
   const resultElement = document.querySelector("#formula-result");
   const substitutionElement = document.querySelector("#formula-substitution");
+  const symbolicElement = document.querySelector("#formula-symbolic");
 
-  SOLVE_OPTIONS.forEach((option) => {
-    const item = document.createElement("option");
-    item.value = option.value;
-    item.textContent = option.label;
-    solveForSelect.append(item);
-  });
+  if (!solveForSelect.dataset.ready) {
+    SOLVE_OPTIONS.forEach((option) => {
+      const item = document.createElement("option");
+      item.value = option.value;
+      item.textContent = option.label;
+      solveForSelect.append(item);
+    });
+    solveForSelect.dataset.ready = "true";
+  }
 
   const render = () => {
     solveForSelect.value = state.solveFor;
@@ -28,7 +32,7 @@ export function createFormulaPanel(state, onApply) {
       const label = document.createElement("label");
       label.className = "label-strong";
       label.htmlFor = `formula-${field.key}`;
-      label.textContent = field.label;
+      label.innerHTML = field.label;
 
       const input = document.createElement("input");
       input.id = `formula-${field.key}`;
@@ -42,33 +46,39 @@ export function createFormulaPanel(state, onApply) {
     });
 
     const result = calculateFormulaResult(state);
-    resultElement.innerHTML = result.html;
+    symbolicElement.innerHTML = result.symbolic;
     substitutionElement.innerHTML = result.substitution;
+    resultElement.innerHTML = result.html;
   };
 
-  solveForSelect.addEventListener("change", () => {
-    state.solveFor = solveForSelect.value;
-    render();
-  });
+  if (!solveForSelect.dataset.bound) {
+    solveForSelect.addEventListener("change", () => {
+      state.solveFor = solveForSelect.value;
+      render();
+    });
 
-  sigFigsSelect.addEventListener("change", () => {
-    state.sigFigs = Number.parseInt(sigFigsSelect.value, 10);
-    render();
-  });
+    sigFigsSelect.addEventListener("change", () => {
+      state.sigFigs = Number.parseInt(sigFigsSelect.value, 10);
+      render();
+    });
 
-  inputsContainer.addEventListener("input", (event) => {
-    const target = event.target;
-    if (!(target instanceof HTMLInputElement)) {
-      return;
-    }
+    inputsContainer.addEventListener("input", (event) => {
+      const target = event.target;
+      if (!(target instanceof HTMLInputElement)) {
+        return;
+      }
 
-    const key = target.dataset.key;
-    state[key] = parseNumber(target.value, state[key]);
-    const result = calculateFormulaResult(state);
-    onApply(result.patch);
-    resultElement.innerHTML = result.html;
-    substitutionElement.innerHTML = result.substitution;
-  });
+      const key = target.dataset.key;
+      state[key] = parseNumber(target.value, state[key]);
+      const result = calculateFormulaResult(state);
+      onApply(result.patch);
+      symbolicElement.innerHTML = result.symbolic;
+      substitutionElement.innerHTML = result.substitution;
+      resultElement.innerHTML = result.html;
+    });
+
+    solveForSelect.dataset.bound = "true";
+  }
 
   render();
   return { render };
@@ -84,8 +94,9 @@ function calculateFormulaResult(state) {
       g: state.g,
     });
     return {
+      symbolic: `v = &radic;(r g tan &theta;)`,
+      substitution: `v = &radic;(${formatSigFigs(state.radius, figs)} × ${formatSigFigs(state.g, figs)} × tan ${formatSigFigs(state.theta, figs)}°)`,
       html: `v = <strong>${formatSigFigs(velocity, figs)}</strong> m/s`,
-      substitution: `v = &radic;(${formatSigFigs(state.radius, figs)} × ${formatSigFigs(state.g, figs)} × tan ${formatSigFigs(state.theta, figs)}&deg;)`,
       patch: { velocity },
     };
   }
@@ -97,8 +108,9 @@ function calculateFormulaResult(state) {
       g: state.g,
     });
     return {
-      html: `&theta; = <strong>${formatSigFigs(theta, figs)}</strong>&deg;`,
-      substitution: `&theta; = tan<sup>-1</sup>(${formatSigFigs(state.velocity, figs)}<sup>2</sup> / (${formatSigFigs(state.radius, figs)} × ${formatSigFigs(state.g, figs)}))`,
+      symbolic: `&theta; = tan<sup>-1</sup>(v² / (r g))`,
+      substitution: `&theta; = tan<sup>-1</sup>(${formatSigFigs(state.velocity, figs)}² / (${formatSigFigs(state.radius, figs)} × ${formatSigFigs(state.g, figs)}))`,
+      html: `&theta; = <strong>${formatSigFigs(theta, figs)}</strong>°`,
       patch: { theta },
     };
   }
@@ -109,8 +121,9 @@ function calculateFormulaResult(state) {
     g: state.g,
   });
   return {
+    symbolic: `r = v² / (g tan &theta;)`,
+    substitution: `r = ${formatSigFigs(state.velocity, figs)}² / (${formatSigFigs(state.g, figs)} × tan ${formatSigFigs(state.theta, figs)}°)`,
     html: `r = <strong>${formatSigFigs(radius, figs)}</strong> m`,
-    substitution: `r = ${formatSigFigs(state.velocity, figs)}<sup>2</sup> / (${formatSigFigs(state.g, figs)} × tan ${formatSigFigs(state.theta, figs)}&deg;)`,
     patch: { radius },
   };
 }
@@ -118,24 +131,24 @@ function calculateFormulaResult(state) {
 function getFieldsForSolve(state) {
   if (state.solveFor === "velocity") {
     return [
-      { key: "radius", label: "Radius (m)", step: "0.1", value: state.radius },
-      { key: "theta", label: "Bank angle θ (°)", step: "0.1", value: state.theta },
-      { key: "g", label: "Gravity g (m/s^2)", step: "0.01", value: state.g },
+      { key: "radius", label: `r =`, step: "0.1", value: state.radius },
+      { key: "theta", label: `θ =`, step: "0.1", value: state.theta },
+      { key: "g", label: `g =`, step: "0.01", value: state.g },
     ];
   }
 
   if (state.solveFor === "bank angle") {
     return [
-      { key: "velocity", label: "Velocity (m/s)", step: "0.1", value: state.velocity },
-      { key: "radius", label: "Radius (m)", step: "0.1", value: state.radius },
-      { key: "g", label: "Gravity g (m/s^2)", step: "0.01", value: state.g },
+      { key: "velocity", label: `v =`, step: "0.1", value: state.velocity },
+      { key: "radius", label: `r =`, step: "0.1", value: state.radius },
+      { key: "g", label: `g =`, step: "0.01", value: state.g },
     ];
   }
 
   return [
-    { key: "velocity", label: "Velocity (m/s)", step: "0.1", value: state.velocity },
-    { key: "theta", label: "Bank angle θ (°)", step: "0.1", value: state.theta },
-    { key: "g", label: "Gravity g (m/s^2)", step: "0.01", value: state.g },
+    { key: "velocity", label: `v =`, step: "0.1", value: state.velocity },
+    { key: "theta", label: `θ =`, step: "0.1", value: state.theta },
+    { key: "g", label: `g =`, step: "0.01", value: state.g },
   ];
 }
 

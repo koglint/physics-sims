@@ -5,7 +5,9 @@ export function drawTopView(ctx, bounds, state, physics, vectorMeta, animationTi
   const { width, height } = bounds;
   const centerX = width * 0.5;
   const centerY = height * 0.55;
-  const trackRadius = Math.min(width, height) * 0.27;
+  const minRadius = Math.min(width, height) * 0.14;
+  const maxRadius = Math.min(width, height) * 0.34;
+  const trackRadius = minRadius + ((state.radius - 15) / (200 - 15)) * (maxRadius - minRadius);
   const angularSpeed = state.radius > 0 ? state.velocity / state.radius : 0;
   const angle = (animationTime * angularSpeed) / 1000;
   const carX = centerX + Math.cos(angle) * trackRadius;

@@ -403,6 +403,12 @@ a {
   gap: 0.75rem;
 }
 
+.formula-toolbar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
 .formula-grid input,
 .formula-grid select,
 .select-row select {
@@ -422,6 +428,12 @@ a {
 
 .formula-result strong {
   font-size: 1.1em;
+}
+
+.formula-row {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  align-items: center;
 }
 
 .metrics-grid {
@@ -506,6 +518,15 @@ a {
 
   .panel.formula-panel {
     order: 3;
+  }
+
+  .sim-layout {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .formula-toolbar {
+    grid-template-columns: 1fr;
   }
 
   .controls-panel.is-collapsed .panel-inner {

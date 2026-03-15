@@ -96,29 +96,31 @@
         <div class="panel-inner stack">
           <div class="panel-section stack">
             <h2>Formula Explorer</h2>
-            <div class="formula-box">
-              <p class="formula-main"><span class="formula-symbol">v = &radic;(r g tan &theta;)</span></p>
-              <p class="formula-sub">Ideal frictionless speed for a banked curve.</p>
-            </div>
             <div class="formula-grid">
-              <div>
-                <label class="label-strong" for="solve-for">Solve for</label>
-                <select id="solve-for"></select>
+              <div class="formula-toolbar">
+                <div>
+                  <label class="label-strong" for="solve-for">Solve for</label>
+                  <select id="solve-for"></select>
+                </div>
+                <div>
+                  <label class="label-strong" for="sig-figs">Significant figures</label>
+                  <select id="sig-figs">
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
               </div>
-              <div>
-                <label class="label-strong" for="sig-figs">Significant figures</label>
-                <select id="sig-figs">
-                  <option value="2">2</option>
-                  <option value="3" selected>3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
+              <div class="formula-box">
+                <p class="formula-main"><span class="formula-symbol" id="formula-symbolic">v = &radic;(r g tan &theta;)</span></p>
+                <p class="formula-sub">Ideal frictionless speed for a banked curve.</p>
               </div>
+              <div id="formula-inputs" class="stack"></div>
               <div class="formula-box">
                 <p class="formula-main" id="formula-substitution"></p>
                 <p class="formula-sub">Live substitution with the current values.</p>
               </div>
-              <div id="formula-inputs" class="stack"></div>
               <div class="formula-result" id="formula-result">Result updates the simulation sliders.</div>
             </div>
           </div>
