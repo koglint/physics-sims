@@ -9,6 +9,10 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const carWidth = roadLength * 0.16;
   const carHeight = roadLength * 0.07;
   const angle = physics.thetaRadians;
+  const leftEnd = {
+    x: centerX - Math.cos(angle) * roadLength * 0.55,
+    y: centerY - Math.sin(angle) * roadLength * 0.55,
+  };
 
   ctx.save();
   ctx.translate(centerX, centerY);
@@ -29,6 +33,15 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   ctx.strokeRect(-carWidth / 2, -carHeight - 10, carWidth, carHeight);
   ctx.restore();
 
+  ctx.save();
+  ctx.strokeStyle = "#8f877b";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(leftEnd.x - roadLength * 0.1, leftEnd.y);
+  ctx.lineTo(leftEnd.x + roadLength * 0.48, leftEnd.y);
+  ctx.stroke();
+  ctx.restore();
+
   drawLabel(ctx, `${state.theta.toFixed(0)} deg bank`, width * 0.13, height * 0.12, {
     color: "#225e51",
     size: 18,
@@ -37,19 +50,20 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
 
   drawAngleArc(
     ctx,
-    centerX - roadLength * 0.2,
-    centerY + roadLength * 0.02,
-    Math.max(24, roadLength * 0.12),
+    leftEnd.x + roadLength * 0.03,
+    leftEnd.y,
+    Math.max(28, roadLength * 0.14),
     0,
     physics.thetaRadians,
-    "θ",
+    "theta",
+    { labelOffset: 12 },
   );
 
   const origin = { x: centerX, y: centerY - roadLength * 0.07 };
-  const maxForce = 30000;
-  const baseScale = Math.min(width, height) * 0.25;
-  const weightVector = { x: 0, y: getLength(physics.weight, maxForce, 24, baseScale, state.scaleVectorsByMagnitude) };
-  const normalLength = getLength(physics.normalForce, maxForce, 24, baseScale, state.scaleVectorsByMagnitude);
+  const maxForce = 22000;
+  const baseScale = Math.min(width, height) * 0.34;
+  const weightVector = { x: 0, y: getLength(physics.weight, maxForce, 42, baseScale, state.scaleVectorsByMagnitude) };
+  const normalLength = getLength(physics.normalForce, maxForce, 42, baseScale, state.scaleVectorsByMagnitude);
   const normalVector = {
     x: Math.sin(physics.thetaRadians) * normalLength,
     y: -Math.cos(physics.thetaRadians) * normalLength,
@@ -57,8 +71,8 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const frictionLength = getLength(
     Math.abs(physics.frictionActualSigned),
     maxForce,
-    18,
-    baseScale * 0.85,
+    24,
+    baseScale * 0.92,
     state.scaleVectorsByMagnitude,
   );
   const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
@@ -67,7 +81,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
     y: Math.sin(physics.thetaRadians) * frictionLength * frictionDirection,
   };
   const centripetalVector = {
-    x: getLength(physics.centripetalForce, maxForce, 18, baseScale, state.scaleVectorsByMagnitude),
+    x: getLength(physics.centripetalForce, maxForce, 28, baseScale, state.scaleVectorsByMagnitude),
     y: 0,
   };
 
@@ -76,6 +90,16 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
 
   if (state.frictionEnabled) {
     drawConfiguredVector(ctx, origin, frictionVector, "friction", vectorMeta, "Ff");
+  }
+
+  if (vectorMeta.normalComponents?.visible) {
+    drawComponentVector(ctx, origin, { x: normalVector.x, y: 0 }, vectorMeta.normalComponents.color, "FNx");
+    drawComponentVector(ctx, origin, { x: 0, y: normalVector.y }, vectorMeta.normalComponents.color, "FNy");
+  }
+
+  if (state.frictionEnabled && vectorMeta.frictionComponents?.visible) {
+    drawComponentVector(ctx, origin, { x: frictionVector.x, y: 0 }, vectorMeta.frictionComponents.color, "Ffx");
+    drawComponentVector(ctx, origin, { x: 0, y: frictionVector.y }, vectorMeta.frictionComponents.color, "Ffy");
   }
 
   drawConfiguredVector(ctx, origin, centripetalVector, "centripetal", vectorMeta, "Fc");
@@ -98,5 +122,19 @@ function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
     dy: vector.y,
     color: config.color,
     label,
+  });
+}
+
+function drawComponentVector(ctx, origin, vector, color, label) {
+  drawArrow(ctx, {
+    x: origin.x,
+    y: origin.y,
+    dx: vector.x,
+    dy: vector.y,
+    color,
+    label,
+    dashed: true,
+    width: 2,
+    alpha: 0.9,
   });
 }
