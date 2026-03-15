@@ -1,0 +1,7 @@
+{
+  "slug": "banked-curve",
+  "title": "Banked Curve",
+  "category": "Mechanics",
+  "description": "Investigate ideal banking speed, force vectors, and friction direction on a banked road.",
+  "entry": "./index.html"
+}

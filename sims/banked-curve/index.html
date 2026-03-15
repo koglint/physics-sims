@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banked Curve Simulation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body class="sim-page">
+  <main class="site-shell" id="sim-root">
+    <header class="sim-header">
+      <div>
+        <p class="eyebrow">Mechanics Simulation</p>
+        <h1>Banked Curve</h1>
+        <p class="sim-subtitle">
+          Compare the ideal banking speed with real motion, explore force vectors, and switch between road, free-body,
+          and top-down views.
+        </p>
+      </div>
+      <div class="sim-header-actions">
+        <a class="ghost-link" href="../../index.html">Back to library</a>
+        <button id="mobile-controls-toggle" class="mobile-toggle" type="button" aria-expanded="true">Toggle controls</button>
+        <button id="reset-button" class="action-button" type="button">Reset</button>
+        <button id="copy-link-button" class="action-button" type="button">Copy Link</button>
+        <span id="status-pill" class="status-pill">Ready</span>
+      </div>
+    </header>
+
+    <section class="sim-layout">
+      <aside id="controls-panel" class="panel controls-panel">
+        <div class="panel-inner stack">
+          <div class="panel-section">
+            <h2>Controls</h2>
+            <div id="slider-controls" class="stack"></div>
+          </div>
+
+          <div class="panel-section stack">
+            <div class="checkbox-row">
+              <input id="friction-enabled" type="checkbox">
+              <label for="friction-enabled" class="label-strong">Include friction</label>
+            </div>
+            <div class="checkbox-row">
+              <input id="show-components" type="checkbox">
+              <label for="show-components" class="label-strong">Show components in FBD</label>
+            </div>
+            <div class="checkbox-row">
+              <input id="prediction-toggle" type="checkbox">
+              <label for="prediction-toggle" class="label-strong">Show prediction prompt</label>
+            </div>
+            <div class="checkbox-row">
+              <input id="contrast-toggle" type="checkbox">
+              <label for="contrast-toggle" class="label-strong">High contrast mode</label>
+            </div>
+          </div>
+
+          <div class="panel-section stack">
+            <div class="select-row">
+              <label class="label-strong" for="diagram-mode">Diagram mode</label>
+              <select id="diagram-mode"></select>
+            </div>
+            <p class="hint" id="diagram-hint">Road view shows the car on the banked track.</p>
+          </div>
+
+          <div class="panel-section">
+            <h3>Presets</h3>
+            <div class="preset-grid">
+              <button type="button" class="preset-button" data-preset="ideal">Ideal bank</button>
+              <button type="button" class="preset-button" data-preset="slow">Too slow</button>
+              <button type="button" class="preset-button" data-preset="fast">Too fast</button>
+              <button type="button" class="preset-button" data-preset="friction">High friction</button>
+            </div>
+          </div>
+
+          <div class="panel-section stack">
+            <h3>Vector Controls</h3>
+            <div class="checkbox-row">
+              <input id="vector-scale-toggle" type="checkbox">
+              <label for="vector-scale-toggle" class="label-strong">Scale vectors by magnitude</label>
+            </div>
+            <div id="vector-controls" class="stack"></div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="panel canvas-panel">
+        <div class="canvas-wrap" id="canvas-container">
+          <canvas id="sim-canvas" aria-label="Banked curve simulation canvas"></canvas>
+        </div>
+        <div class="canvas-caption">
+          <span id="mode-caption">Road View</span>
+          <span id="physics-caption">Static friction balances the required centripetal motion.</span>
+        </div>
+      </section>
+
+      <aside class="panel formula-panel">
+        <div class="panel-inner stack">
+          <div class="panel-section stack">
+            <h2>Formula Explorer</h2>
+            <div class="formula-box">
+              <p class="formula-main">v = sqrt(r g tan(theta))</p>
+              <p class="formula-sub">Ideal frictionless speed for a banked curve.</p>
+            </div>
+            <div class="formula-grid">
+              <div>
+                <label class="label-strong" for="solve-for">Solve for</label>
+                <select id="solve-for"></select>
+              </div>
+              <div id="formula-inputs" class="stack"></div>
+              <div class="formula-result" id="formula-result">Result updates the simulation sliders.</div>
+            </div>
+          </div>
+
+          <div id="friction-formulas" class="panel-section stack">
+            <h3>Friction Limits</h3>
+            <div class="formula-box">
+              <p class="formula-main">vmax = sqrt((r g (sin(theta) + mu cos(theta))) / (cos(theta) - mu sin(theta)))</p>
+              <p class="formula-sub">Maximum speed before the car slides up the bank.</p>
+            </div>
+            <div class="formula-box">
+              <p class="formula-main">vmin = sqrt((r g (sin(theta) - mu cos(theta))) / (cos(theta) + mu sin(theta)))</p>
+              <p class="formula-sub">Minimum speed before the car slides down the bank.</p>
+            </div>
+          </div>
+
+          <div id="prediction-panel" class="panel-section prediction-box">
+            <strong>Prediction</strong>
+            <span id="prediction-text">Which direction will friction act?</span>
+          </div>
+
+          <div class="panel-section">
+            <h3>Data Readout</h3>
+            <div class="metrics-grid" id="metrics-grid"></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <script type="module" src="./sim.js"></script>
+</body>
+</html>
