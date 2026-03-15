@@ -10,7 +10,7 @@ export const PHYSICS_DEFAULTS = {
   showPrediction: true,
   solveFor: "velocity",
   scaleVectorsByMagnitude: true,
-  showComponents: false,
+  showComponents: true,
   sigFigs: 3,
 };
 

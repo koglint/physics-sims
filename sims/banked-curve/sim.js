@@ -88,7 +88,6 @@ export function updateUI() {
   });
 
   document.querySelector("#friction-enabled").checked = state.frictionEnabled;
-  document.querySelector("#show-components").checked = state.showComponents;
   document.querySelector("#vector-scale-toggle").checked = state.scaleVectorsByMagnitude;
   document.querySelector("#diagram-mode").value = state.diagramMode;
   document.querySelector("#friction-formulas").classList.toggle("is-hidden", !state.frictionEnabled);
@@ -193,11 +192,6 @@ function bindInputs() {
   document.querySelector("#friction-enabled").addEventListener("change", (event) => {
     state.frictionEnabled = event.target.checked;
     state.mu = state.frictionEnabled ? Math.max(state.mu, PHYSICS_DEFAULTS.mu) : 0;
-    markDirty("all");
-  });
-
-  document.querySelector("#show-components").addEventListener("change", (event) => {
-    state.showComponents = event.target.checked;
     markDirty("all");
   });
 
@@ -325,7 +319,7 @@ function buildCaption(physics) {
 
 function buildDiagramHint(mode) {
   if (mode === "fbd") {
-    return "Free-body view isolates the forces and optional dashed components.";
+    return "Free-body view isolates the force balance and components.";
   }
 
   if (mode === "top") {

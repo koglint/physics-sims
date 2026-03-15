@@ -1,11 +1,19 @@
 import { drawAngleArc, drawLabel } from "../../shared/canvasUtils.js";
-import { drawArrow, scaleVectorByMagnitude } from "../../shared/vectors.js";
+import { drawArrow } from "../../shared/vectors.js";
 
 export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
   const origin = { x: width * 0.44, y: height * 0.63 };
-  const maxForce = 22000;
-  const baseScale = Math.min(width, height) * 0.42;
+  const forceScale = createForceScaler(Math.min(width, height) * 0.46, 46, 18000, state.scaleVectorsByMagnitude);
+  const angle = physics.thetaRadians;
+  const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
+  const normalLength = forceScale(physics.normalForce);
+  const weightLength = forceScale(physics.weight);
+  const frictionLength = forceScale(Math.abs(physics.frictionActualSigned));
+  const normalXLength = forceScale(Math.abs(physics.normalForce * Math.sin(angle)));
+  const normalYLength = forceScale(Math.abs(physics.normalForce * Math.cos(angle)));
+  const frictionXLength = forceScale(Math.abs(physics.frictionActualSigned * Math.cos(angle)));
+  const frictionYLength = forceScale(Math.abs(physics.frictionActualSigned * Math.sin(angle)));
 
   ctx.save();
   ctx.fillStyle = "#102a2a";
@@ -20,95 +28,37 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
     weight: 700,
   });
 
-  const normalLength = getLength(physics.normalForce, maxForce, 60, baseScale, state.scaleVectorsByMagnitude);
-  const frictionLength = getLength(
-    Math.abs(physics.frictionActualSigned),
-    maxForce,
-    40,
-    baseScale * 0.95,
-    state.scaleVectorsByMagnitude,
-  );
-  const weightLength = getLength(physics.weight, maxForce, 60, baseScale, state.scaleVectorsByMagnitude);
-  const normalVector = {
-    x: Math.sin(physics.thetaRadians) * normalLength,
-    y: -Math.cos(physics.thetaRadians) * normalLength,
-  };
-  const weightVector = { x: 0, y: weightLength };
-  const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
-  const frictionVector = {
-    x: Math.cos(physics.thetaRadians) * frictionLength * frictionDirection,
-    y: Math.sin(physics.thetaRadians) * frictionLength * frictionDirection,
-  };
-
-  drawConfiguredVector(ctx, origin, weightVector, "weight", vectorMeta, "mg");
-  drawConfiguredVector(ctx, origin, normalVector, "normal", vectorMeta, "FN");
+  drawConfiguredVector(ctx, origin, { x: 0, y: weightLength }, "weight", vectorMeta, "mg");
+  drawConfiguredVector(ctx, origin, { x: Math.sin(angle) * normalLength, y: -Math.cos(angle) * normalLength }, "normal", vectorMeta, "FN");
 
   if (state.frictionEnabled) {
-    drawConfiguredVector(ctx, origin, frictionVector, "friction", vectorMeta, "Ff");
+    drawConfiguredVector(ctx, origin, { x: Math.cos(angle) * frictionLength * frictionDirection, y: Math.sin(angle) * frictionLength * frictionDirection }, "friction", vectorMeta, "Ff");
   }
 
-  drawAngleArc(
-    ctx,
-    origin.x,
-    origin.y,
-    Math.max(30, normalLength * 0.34),
-    -Math.PI / 2,
-    -Math.PI / 2 + physics.thetaRadians,
-    "θ",
-    { labelOffset: 12 },
-  );
+  drawAngleArc(ctx, origin.x, origin.y, Math.max(28, normalLength * 0.28), -Math.PI / 2, -Math.PI / 2 + angle, "θ", {
+    labelOffset: 12,
+  });
 
-  if (state.showComponents && vectorMeta.normalComponents?.visible) {
-    drawArrow(ctx, {
-      x: origin.x,
-      y: origin.y,
-      dx: 0,
-      dy: -Math.cos(physics.thetaRadians) * normalLength,
-      color: vectorMeta.normalComponents.color,
-      label: "FNy",
-      dashed: true,
-      width: 2,
-    });
-    drawArrow(ctx, {
-      x: origin.x,
-      y: origin.y,
-      dx: Math.sin(physics.thetaRadians) * normalLength,
-      dy: 0,
-      color: vectorMeta.normalComponents.color,
-      label: "FNx",
-      dashed: true,
-      width: 2,
-    });
+  if (vectorMeta.normalComponents?.visible) {
+    drawComponentVector(ctx, origin, { x: 0, y: -normalYLength }, vectorMeta.normalComponents.color, "FNy");
+    drawComponentVector(ctx, origin, { x: normalXLength, y: 0 }, vectorMeta.normalComponents.color, "FNx");
   }
 
-  if (state.showComponents && state.frictionEnabled && vectorMeta.frictionComponents?.visible) {
-    drawArrow(ctx, {
-      x: origin.x,
-      y: origin.y,
-      dx: Math.cos(physics.thetaRadians) * frictionLength * frictionDirection,
-      dy: 0,
-      color: vectorMeta.frictionComponents.color,
-      label: "Ffx",
-      dashed: true,
-      width: 2,
-      alpha: 0.8,
-    });
-    drawArrow(ctx, {
-      x: origin.x,
-      y: origin.y,
-      dx: 0,
-      dy: Math.sin(physics.thetaRadians) * frictionLength * frictionDirection,
-      color: vectorMeta.frictionComponents.color,
-      label: "Ffy",
-      dashed: true,
-      width: 2,
-      alpha: 0.8,
-    });
+  if (state.frictionEnabled && vectorMeta.frictionComponents?.visible) {
+    drawComponentVector(ctx, origin, { x: frictionXLength * frictionDirection, y: 0 }, vectorMeta.frictionComponents.color, "Ffx");
+    drawComponentVector(ctx, origin, { x: 0, y: frictionYLength * frictionDirection }, vectorMeta.frictionComponents.color, "Ffy");
   }
 }
 
-function getLength(value, maxForce, minLength, maxLength, useMagnitudeScaling) {
-  return useMagnitudeScaling ? scaleVectorByMagnitude(value, maxForce, minLength, maxLength) : maxLength * 0.82;
+function createForceScaler(maxLength, minLength, referenceForce, useMagnitudeScaling) {
+  return (force) => {
+    if (!useMagnitudeScaling) {
+      return maxLength * 0.82;
+    }
+
+    const scaled = (Math.abs(force) / referenceForce) * maxLength;
+    return Math.min(maxLength, Math.max(minLength, scaled));
+  };
 }
 
 function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
@@ -124,5 +74,19 @@ function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
     dy: vector.y,
     color: config.color,
     label,
+  });
+}
+
+function drawComponentVector(ctx, origin, vector, color, label) {
+  drawArrow(ctx, {
+    x: origin.x,
+    y: origin.y,
+    dx: vector.x,
+    dy: vector.y,
+    color,
+    label,
+    dashed: true,
+    width: 2,
+    alpha: 0.88,
   });
 }

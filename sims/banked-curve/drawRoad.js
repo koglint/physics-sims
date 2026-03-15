@@ -1,5 +1,5 @@
 import { drawAngleArc, drawLabel } from "../../shared/canvasUtils.js";
-import { drawArrow, scaleVectorByMagnitude } from "../../shared/vectors.js";
+import { drawArrow } from "../../shared/vectors.js";
 
 export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
@@ -22,7 +22,6 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   ctx.save();
   ctx.translate(centerX, centerY);
   ctx.rotate(angle);
-
   ctx.strokeStyle = "#5e5a55";
   ctx.lineWidth = 20;
   ctx.lineCap = "round";
@@ -53,65 +52,62 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
     weight: 700,
   });
 
-  drawAngleArc(
-    ctx,
-    rightEnd.x - roadLength * 0.01,
-    rightEnd.y - 2,
-    Math.max(32, roadLength * 0.15),
-    -Math.PI,
-    -Math.PI + angle,
-    "θ",
-    { labelOffset: 12 },
-  );
+  drawAngleArc(ctx, rightEnd.x - roadLength * 0.01, rightEnd.y - 2, Math.max(32, roadLength * 0.15), -Math.PI, -Math.PI + angle, "θ", {
+    labelOffset: 12,
+  });
 
-  const origin = carCenter;
-  const maxForce = 14000;
-  const baseScale = Math.min(width, height) * 0.5;
-  const weightVector = { x: 0, y: getLength(physics.weight, maxForce, 68, baseScale, state.scaleVectorsByMagnitude) };
-  const normalLength = getLength(physics.normalForce, maxForce, 68, baseScale, state.scaleVectorsByMagnitude);
+  const forceScale = createForceScaler(Math.min(width, height) * 0.54, 42, 18000, state.scaleVectorsByMagnitude);
+  const normalLength = forceScale(physics.normalForce);
+  const weightLength = forceScale(physics.weight);
+  const frictionLength = forceScale(Math.abs(physics.frictionActualSigned));
+  const centripetalLength = forceScale(physics.centripetalForce);
+  const normalXLength = forceScale(Math.abs(physics.normalForce * Math.sin(angle)));
+  const normalYLength = forceScale(Math.abs(physics.normalForce * Math.cos(angle)));
+  const frictionXLength = forceScale(Math.abs(physics.frictionActualSigned * Math.cos(angle)));
+  const frictionYLength = forceScale(Math.abs(physics.frictionActualSigned * Math.sin(angle)));
+  const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
+
   const normalVector = {
     x: Math.sin(angle) * normalLength,
     y: -Math.cos(angle) * normalLength,
   };
-  const frictionLength = getLength(
-    Math.abs(physics.frictionActualSigned),
-    maxForce,
-    44,
-    baseScale,
-    state.scaleVectorsByMagnitude,
-  );
-  const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
   const frictionVector = {
     x: Math.cos(angle) * frictionLength * frictionDirection,
     y: Math.sin(angle) * frictionLength * frictionDirection,
   };
-  const centripetalVector = {
-    x: getLength(physics.centripetalForce, maxForce, 48, baseScale, state.scaleVectorsByMagnitude),
-    y: 0,
-  };
 
-  drawConfiguredVector(ctx, origin, weightVector, "weight", vectorMeta, "mg");
-  drawConfiguredVector(ctx, origin, normalVector, "normal", vectorMeta, "FN");
+  drawConfiguredVector(ctx, carCenter, { x: 0, y: weightLength }, "weight", vectorMeta, "mg");
+  drawConfiguredVector(ctx, carCenter, normalVector, "normal", vectorMeta, "FN");
 
   if (state.frictionEnabled) {
-    drawConfiguredVector(ctx, origin, frictionVector, "friction", vectorMeta, "Ff");
+    drawConfiguredVector(ctx, carCenter, frictionVector, "friction", vectorMeta, "Ff");
   }
 
   if (vectorMeta.normalComponents?.visible) {
-    drawComponentVector(ctx, origin, { x: normalVector.x, y: 0 }, vectorMeta.normalComponents.color, "FNx");
-    drawComponentVector(ctx, origin, { x: 0, y: normalVector.y }, vectorMeta.normalComponents.color, "FNy");
+    drawComponentVector(ctx, carCenter, { x: normalXLength, y: 0 }, vectorMeta.normalComponents.color, "FNx");
+    drawComponentVector(ctx, carCenter, { x: 0, y: -normalYLength }, vectorMeta.normalComponents.color, "FNy");
+    drawAngleArc(ctx, carCenter.x, carCenter.y, Math.max(24, normalLength * 0.28), -Math.PI / 2, -Math.PI / 2 + angle, "θ", {
+      labelOffset: 10,
+    });
   }
 
   if (state.frictionEnabled && vectorMeta.frictionComponents?.visible) {
-    drawComponentVector(ctx, origin, { x: frictionVector.x, y: 0 }, vectorMeta.frictionComponents.color, "Ffx");
-    drawComponentVector(ctx, origin, { x: 0, y: frictionVector.y }, vectorMeta.frictionComponents.color, "Ffy");
+    drawComponentVector(ctx, carCenter, { x: frictionXLength * frictionDirection, y: 0 }, vectorMeta.frictionComponents.color, "Ffx");
+    drawComponentVector(ctx, carCenter, { x: 0, y: frictionYLength * frictionDirection }, vectorMeta.frictionComponents.color, "Ffy");
   }
 
-  drawConfiguredVector(ctx, origin, centripetalVector, "centripetal", vectorMeta, "Fc");
+  drawConfiguredVector(ctx, carCenter, { x: centripetalLength, y: 0 }, "centripetal", vectorMeta, "Fc");
 }
 
-function getLength(value, maxForce, minLength, maxLength, useMagnitudeScaling) {
-  return useMagnitudeScaling ? scaleVectorByMagnitude(value, maxForce, minLength, maxLength) : maxLength * 0.86;
+function createForceScaler(maxLength, minLength, referenceForce, useMagnitudeScaling) {
+  return (force) => {
+    if (!useMagnitudeScaling) {
+      return maxLength * 0.86;
+    }
+
+    const scaled = (Math.abs(force) / referenceForce) * maxLength;
+    return Math.min(maxLength, Math.max(minLength, scaled));
+  };
 }
 
 function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
