@@ -24,11 +24,11 @@ const runtime = {
 };
 
 const controls = [
-  { key: "theta", label: "Bank angle (theta)", description: "Road tilt angle" },
+  { key: "theta", label: "Bank angle (θ)", description: "Road tilt angle" },
   { key: "velocity", label: "Velocity (v)", description: "Car speed along the curve" },
   { key: "mass", label: "Mass (m)", description: "Vehicle mass" },
   { key: "radius", label: "Radius (r)", description: "Curve radius" },
-  { key: "mu", label: "Friction coefficient (mu)", description: "Static friction limit" },
+  { key: "mu", label: "Friction coefficient (μ)", description: "Static friction limit" },
   { key: "g", label: "Gravity (g)", description: "Local gravitational field" },
 ];
 
@@ -106,7 +106,10 @@ export function updateUI() {
     const key = row.getAttribute("data-vector-key");
     row.querySelector('input[type="checkbox"]').checked = state.vectors[key].visible;
     row.querySelector('input[type="color"]').value = state.vectors[key].color;
-    row.classList.toggle("is-hidden", key === "friction" && !state.frictionEnabled);
+    row.classList.toggle(
+      "is-hidden",
+      !state.frictionEnabled && (key === "friction" || key === "frictionComponents"),
+    );
   });
 
   document.querySelector("#prediction-text").textContent = getPredictionCopy(runtime.physics);
@@ -148,7 +151,8 @@ function buildVectorControls() {
     friction: "Friction",
     centripetal: "Centripetal",
     velocity: "Velocity",
-    components: "Components",
+    normalComponents: "Normal components",
+    frictionComponents: "Friction components",
   };
 
   Object.entries(state.vectors).forEach(([key, config]) => {

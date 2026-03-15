@@ -15,7 +15,7 @@ export const PHYSICS_DEFAULTS = {
 };
 
 export const RANGE_CONFIG = {
-  theta: { min: 5, max: 45, step: 1, unit: "deg" },
+  theta: { min: 0, max: 90, step: 1, unit: "deg" },
   velocity: { min: 2, max: 45, step: 0.5, unit: "m/s" },
   mass: { min: 500, max: 2500, step: 10, unit: "kg" },
   radius: { min: 15, max: 200, step: 1, unit: "m" },
@@ -29,7 +29,8 @@ export const VECTOR_DEFAULTS = {
   friction: { visible: true, color: "#f4a261" },
   centripetal: { visible: true, color: "#2a4d9b" },
   velocity: { visible: true, color: "#7a3ec8" },
-  components: { visible: true, color: "#425466" },
+  normalComponents: { visible: true, color: "#425466" },
+  frictionComponents: { visible: false, color: "#6c757d" },
 };
 
 export const DIAGRAM_MODES = [

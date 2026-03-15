@@ -1,10 +1,10 @@
-import { drawLabel } from "../../shared/canvasUtils.js";
+import { drawAngleArc, drawLabel } from "../../shared/canvasUtils.js";
 import { drawArrow, scaleVectorByMagnitude } from "../../shared/vectors.js";
 
 export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
   const origin = { x: width * 0.48, y: height * 0.56 };
-  const maxForce = Math.max(physics.weight, physics.normalForce, Math.abs(physics.frictionActualSigned), physics.centripetalForce, 1);
+  const maxForce = 30000;
   const baseScale = Math.min(width, height) * 0.26;
 
   ctx.save();
@@ -47,36 +47,48 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
     drawConfiguredVector(ctx, origin, frictionVector, "friction", vectorMeta, "Ff");
   }
 
-  if (state.showComponents && vectorMeta.components?.visible) {
+  drawAngleArc(
+    ctx,
+    origin.x,
+    origin.y,
+    Math.max(24, normalLength * 0.34),
+    -Math.PI / 2,
+    -Math.PI / 2 + physics.thetaRadians,
+    "θ",
+    { labelOffset: 12 },
+  );
+
+  if (state.showComponents && vectorMeta.normalComponents?.visible) {
     drawArrow(ctx, {
       x: origin.x,
       y: origin.y,
       dx: 0,
       dy: -Math.cos(physics.thetaRadians) * normalLength,
-      color: vectorMeta.components.color,
-      label: "FN cos(theta)",
+      color: vectorMeta.normalComponents.color,
+      label: "FNy",
       dashed: true,
       width: 2,
     });
     drawArrow(ctx, {
-      x: origin.x,
-      y: origin.y,
-      dx: Math.sin(physics.thetaRadians) * normalLength,
-      dy: 0,
-      color: vectorMeta.components.color,
-      label: "FN sin(theta)",
+        x: origin.x,
+        y: origin.y,
+        dx: Math.sin(physics.thetaRadians) * normalLength,
+        dy: 0,
+        color: vectorMeta.normalComponents.color,
+        label: "FNx",
       dashed: true,
       width: 2,
     });
+  }
 
-    if (state.frictionEnabled) {
+  if (state.showComponents && state.frictionEnabled && vectorMeta.frictionComponents?.visible) {
       drawArrow(ctx, {
         x: origin.x,
         y: origin.y,
         dx: Math.cos(physics.thetaRadians) * frictionLength * frictionDirection,
         dy: 0,
-        color: vectorMeta.components.color,
-        label: "Ff cos(theta)",
+        color: vectorMeta.frictionComponents.color,
+        label: "Ffx",
         dashed: true,
         width: 2,
         alpha: 0.8,
@@ -86,13 +98,12 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
         y: origin.y,
         dx: 0,
         dy: Math.sin(physics.thetaRadians) * frictionLength * frictionDirection,
-        color: vectorMeta.components.color,
-        label: "Ff sin(theta)",
+        color: vectorMeta.frictionComponents.color,
+        label: "Ffy",
         dashed: true,
         width: 2,
         alpha: 0.8,
       });
-    }
   }
 }
 

@@ -51,3 +51,21 @@ export function drawDashedCircle(ctx, x, y, radius, strokeStyle) {
   ctx.stroke();
   ctx.restore();
 }
+
+export function drawAngleArc(ctx, x, y, radius, startAngle, endAngle, label, options = {}) {
+  const { color = "#225e51", labelOffset = 16, clockwise = false } = options;
+  const mid = clockwise ? endAngle + (startAngle - endAngle) / 2 : startAngle + (endAngle - startAngle) / 2;
+
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, startAngle, endAngle, clockwise);
+  ctx.stroke();
+  ctx.fillStyle = color;
+  ctx.font = "700 16px 'Source Sans 3', sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText(label, x + Math.cos(mid) * (radius + labelOffset), y + Math.sin(mid) * (radius + labelOffset));
+  ctx.restore();
+}

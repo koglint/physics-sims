@@ -38,7 +38,7 @@ export function createFormulaPanel(state, onApply) {
       inputsContainer.append(wrapper);
     });
 
-    resultElement.textContent = calculateFormulaResult(state).text;
+    resultElement.innerHTML = calculateFormulaResult(state).html;
   };
 
   solveForSelect.addEventListener("change", () => {
@@ -54,8 +54,9 @@ export function createFormulaPanel(state, onApply) {
 
     const key = target.dataset.key;
     state[key] = parseNumber(target.value, state[key]);
-    onApply(calculateFormulaResult(state).patch);
-    resultElement.textContent = calculateFormulaResult(state).text;
+    const result = calculateFormulaResult(state);
+    onApply(result.patch);
+    resultElement.innerHTML = result.html;
   });
 
   render();
@@ -69,7 +70,7 @@ function calculateFormulaResult(state) {
       radius: state.radius,
       g: state.g,
     });
-    return { text: `Velocity = ${formatNumber(velocity, 2)} m/s`, patch: { velocity } };
+    return { html: `v = <strong>${formatNumber(velocity, 2)}</strong> m/s`, patch: { velocity } };
   }
 
   if (state.solveFor === "bank angle") {
@@ -78,7 +79,7 @@ function calculateFormulaResult(state) {
       radius: state.radius,
       g: state.g,
     });
-    return { text: `Bank angle = ${formatNumber(theta, 2)} deg`, patch: { theta } };
+    return { html: `θ = <strong>${formatNumber(theta, 2)}</strong>°`, patch: { theta } };
   }
 
   const radius = solveIdealEquation("radius", {
@@ -86,15 +87,15 @@ function calculateFormulaResult(state) {
     theta: state.theta,
     g: state.g,
   });
-  return { text: `Radius = ${formatNumber(radius, 2)} m`, patch: { radius } };
+  return { html: `r = <strong>${formatNumber(radius, 2)}</strong> m`, patch: { radius } };
 }
 
 function getFieldsForSolve(state) {
   if (state.solveFor === "velocity") {
     return [
       { key: "radius", label: "Radius (m)", step: "0.1", value: state.radius },
-      { key: "theta", label: "Bank angle (deg)", step: "0.1", value: state.theta },
-      { key: "g", label: "Gravity (m/s^2)", step: "0.01", value: state.g },
+      { key: "theta", label: "Bank angle θ (°)", step: "0.1", value: state.theta },
+      { key: "g", label: "Gravity g (m/s²)", step: "0.01", value: state.g },
     ];
   }
 
@@ -102,13 +103,13 @@ function getFieldsForSolve(state) {
     return [
       { key: "velocity", label: "Velocity (m/s)", step: "0.1", value: state.velocity },
       { key: "radius", label: "Radius (m)", step: "0.1", value: state.radius },
-      { key: "g", label: "Gravity (m/s^2)", step: "0.01", value: state.g },
+      { key: "g", label: "Gravity g (m/s²)", step: "0.01", value: state.g },
     ];
   }
 
   return [
     { key: "velocity", label: "Velocity (m/s)", step: "0.1", value: state.velocity },
-    { key: "theta", label: "Bank angle (deg)", step: "0.1", value: state.theta },
-    { key: "g", label: "Gravity (m/s^2)", step: "0.01", value: state.g },
+    { key: "theta", label: "Bank angle θ (°)", step: "0.1", value: state.theta },
+    { key: "g", label: "Gravity g (m/s²)", step: "0.01", value: state.g },
   ];
 }

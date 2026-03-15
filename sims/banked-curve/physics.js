@@ -15,7 +15,7 @@ export function calculatePhysics(state) {
   const theta = toRadians(state.theta);
   const centripetalAcceleration = (state.velocity ** 2) / state.radius;
   const weight = state.mass * state.g;
-  const idealSpeed = Math.sqrt(Math.max(0, state.radius * state.g * Math.tan(theta)));
+  const idealSpeed = Math.sqrt(Math.max(0, state.radius * state.g * safeTan(theta)));
   const normalForce = state.mass * (centripetalAcceleration * Math.sin(theta) + state.g * Math.cos(theta));
   const frictionRequiredSigned = state.mass * (centripetalAcceleration * Math.cos(theta) - state.g * Math.sin(theta));
   const frictionLimit = state.frictionEnabled ? Math.max(0, state.mu * normalForce) : 0;
@@ -55,7 +55,7 @@ export function solveIdealEquation(selection, values) {
   const theta = toRadians(values.theta);
 
   if (selection === "velocity") {
-    return Math.sqrt(Math.max(0, values.radius * values.g * Math.tan(theta)));
+    return Math.sqrt(Math.max(0, values.radius * values.g * safeTan(theta)));
   }
 
   if (selection === "bank angle") {
@@ -63,7 +63,8 @@ export function solveIdealEquation(selection, values) {
     return toDegrees(angle);
   }
 
-  return (values.velocity ** 2) / (values.g * Math.tan(theta));
+  const tanTheta = safeTan(theta);
+  return tanTheta <= 1e-6 ? 0 : (values.velocity ** 2) / (values.g * tanTheta);
 }
 
 export function getFrictionDirection(frictionSigned, enabled) {
@@ -110,4 +111,9 @@ function computeVmin(radius, g, theta, mu, enabled) {
   const numerator = radius * g * (Math.sin(theta) - mu * Math.cos(theta));
   const denominator = Math.cos(theta) + mu * Math.sin(theta);
   return numerator <= 0 || denominator <= 0 ? 0 : Math.sqrt(Math.max(0, numerator / denominator));
+}
+
+function safeTan(theta) {
+  const limit = Math.PI / 2 - 0.001;
+  return Math.tan(Math.min(theta, limit));
 }

@@ -1,4 +1,4 @@
-import { drawLabel } from "../../shared/canvasUtils.js";
+import { drawAngleArc, drawLabel } from "../../shared/canvasUtils.js";
 import { drawArrow, scaleVectorByMagnitude } from "../../shared/vectors.js";
 
 export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
@@ -8,7 +8,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const roadLength = Math.min(width, height) * 0.52;
   const carWidth = roadLength * 0.16;
   const carHeight = roadLength * 0.07;
-  const angle = -physics.thetaRadians;
+  const angle = physics.thetaRadians;
 
   ctx.save();
   ctx.translate(centerX, centerY);
@@ -35,8 +35,18 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
     weight: 700,
   });
 
+  drawAngleArc(
+    ctx,
+    centerX - roadLength * 0.2,
+    centerY + roadLength * 0.02,
+    Math.max(24, roadLength * 0.12),
+    0,
+    physics.thetaRadians,
+    "θ",
+  );
+
   const origin = { x: centerX, y: centerY - roadLength * 0.07 };
-  const maxForce = Math.max(physics.weight, physics.normalForce, Math.abs(physics.frictionActualSigned), physics.centripetalForce, 1);
+  const maxForce = 30000;
   const baseScale = Math.min(width, height) * 0.25;
   const weightVector = { x: 0, y: getLength(physics.weight, maxForce, 24, baseScale, state.scaleVectorsByMagnitude) };
   const normalLength = getLength(physics.normalForce, maxForce, 24, baseScale, state.scaleVectorsByMagnitude);
