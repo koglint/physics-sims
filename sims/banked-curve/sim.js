@@ -89,27 +89,21 @@ export function updateUI() {
 
   document.querySelector("#friction-enabled").checked = state.frictionEnabled;
   document.querySelector("#show-components").checked = state.showComponents;
-  document.querySelector("#prediction-toggle").checked = state.showPrediction;
-  document.querySelector("#contrast-toggle").checked = state.highContrast;
   document.querySelector("#vector-scale-toggle").checked = state.scaleVectorsByMagnitude;
   document.querySelector("#diagram-mode").value = state.diagramMode;
-  document.querySelector("#prediction-panel").classList.toggle("is-hidden", !state.showPrediction);
   document.querySelector("#friction-formulas").classList.toggle("is-hidden", !state.frictionEnabled);
   document.querySelector("#status-pill").textContent = runtime.physics?.skidState === "holds" ? "Balanced" : runtime.physics?.skidState ?? "Ready";
   document.querySelector("#mode-caption").textContent = DIAGRAM_MODES.find((mode) => mode.value === state.diagramMode)?.label ?? "Road View";
   document.querySelector("#physics-caption").textContent = buildCaption(runtime.physics);
   document.querySelector("#diagram-hint").textContent = buildDiagramHint(state.diagramMode);
-  document.body.classList.toggle("high-contrast", state.highContrast);
   document.querySelector("#mu").disabled = !state.frictionEnabled;
+  updateModeButtons();
 
   document.querySelectorAll("[data-vector-key]").forEach((row) => {
     const key = row.getAttribute("data-vector-key");
     row.querySelector('input[type="checkbox"]').checked = state.vectors[key].visible;
     row.querySelector('input[type="color"]').value = state.vectors[key].color;
-    row.classList.toggle(
-      "is-hidden",
-      !state.frictionEnabled && (key === "friction" || key === "frictionComponents"),
-    );
+    row.classList.toggle("is-hidden", !state.frictionEnabled && (key === "friction" || key === "frictionComponents"));
   });
 
   document.querySelector("#prediction-text").textContent = getPredictionCopy(runtime.physics);
@@ -169,13 +163,19 @@ function buildVectorControls() {
 }
 
 function populateDiagramModes() {
-  const select = document.querySelector("#diagram-mode");
+  const hidden = document.querySelector("#diagram-mode");
+  const row = document.querySelector("#diagram-mode-buttons");
+
   DIAGRAM_MODES.forEach((mode) => {
-    const option = document.createElement("option");
-    option.value = mode.value;
-    option.textContent = mode.label;
-    select.append(option);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "mode-button";
+    button.dataset.mode = mode.value;
+    button.textContent = mode.label;
+    row.append(button);
   });
+
+  hidden.value = state.diagramMode;
 }
 
 function bindInputs() {
@@ -201,23 +201,19 @@ function bindInputs() {
     markDirty("all");
   });
 
-  document.querySelector("#prediction-toggle").addEventListener("change", (event) => {
-    state.showPrediction = event.target.checked;
-    markDirty("ui");
-  });
-
-  document.querySelector("#contrast-toggle").addEventListener("change", (event) => {
-    state.highContrast = event.target.checked;
-    markDirty("ui");
-  });
-
   document.querySelector("#vector-scale-toggle").addEventListener("change", (event) => {
     state.scaleVectorsByMagnitude = event.target.checked;
     markDirty("all");
   });
 
-  document.querySelector("#diagram-mode").addEventListener("change", (event) => {
-    state.diagramMode = event.target.value;
+  document.querySelector("#diagram-mode-buttons").addEventListener("click", (event) => {
+    const button = event.target.closest("[data-mode]");
+    if (!button) {
+      return;
+    }
+
+    state.diagramMode = button.dataset.mode;
+    document.querySelector("#diagram-mode").value = state.diagramMode;
     markDirty("all");
   });
 
@@ -275,7 +271,6 @@ function drawScene(timestamp) {
   clearCanvas(ctx, width, height);
   drawBackground(ctx, width, height);
 
-  // The same state drives each diagram mode so classroom comparisons stay aligned.
   if (state.diagramMode === "road") {
     drawRoadView(ctx, { width, height }, state, runtime.physics, state.vectors);
   } else if (state.diagramMode === "fbd") {
@@ -304,10 +299,10 @@ function drawBackground(ctx, width, height) {
 
 function buildMetricsMarkup(physics) {
   const entries = [
-    ["Weight", `${formatNumber(physics.weight, 1)} N`],
-    ["Normal force", `${formatNumber(physics.normalForce, 1)} N`],
-    ["Friction force", `${formatNumber(physics.frictionMagnitude, 1)} N`],
-    ["Centripetal force", `${formatNumber(physics.centripetalForce, 1)} N`],
+    ["Weight", `${formatNumber(physics.weight, 1)} N downward`],
+    ["Normal force", `${formatNumber(physics.normalForce, 1)} N perpendicular to road`],
+    ["Friction force", `${formatNumber(physics.frictionMagnitude, 1)} N ${physics.frictionDirection.toLowerCase()}`],
+    ["Centripetal force", `${formatNumber(physics.centripetalForce, 1)} N toward centre`],
     ["Ideal speed", `${formatNumber(physics.idealSpeed, 2)} m/s`],
     ["vmax", Number.isFinite(physics.vmax) ? `${formatNumber(physics.vmax, 2)} m/s` : "Infinity"],
     ["vmin", `${formatNumber(physics.vmin, 2)} m/s`],
@@ -402,4 +397,12 @@ function markDirty(scope) {
   if (scope === "all") {
     updateUrl();
   }
+}
+
+function updateModeButtons() {
+  document.querySelectorAll("#diagram-mode-buttons [data-mode]").forEach((button) => {
+    const active = button.dataset.mode === state.diagramMode;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
 }

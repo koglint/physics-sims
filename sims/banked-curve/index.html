@@ -46,21 +46,12 @@
               <input id="show-components" type="checkbox">
               <label for="show-components" class="label-strong">Show components in FBD</label>
             </div>
-            <div class="checkbox-row">
-              <input id="prediction-toggle" type="checkbox">
-              <label for="prediction-toggle" class="label-strong">Show prediction prompt</label>
-            </div>
-            <div class="checkbox-row">
-              <input id="contrast-toggle" type="checkbox">
-              <label for="contrast-toggle" class="label-strong">High contrast mode</label>
-            </div>
           </div>
 
           <div class="panel-section stack">
-            <div class="select-row">
-              <label class="label-strong" for="diagram-mode">Diagram mode</label>
-              <select id="diagram-mode"></select>
-            </div>
+            <div class="label-strong">Diagram mode</div>
+            <div id="diagram-mode-buttons" class="mode-button-row" role="group" aria-label="Diagram mode"></div>
+            <input id="diagram-mode" type="hidden">
             <p class="hint" id="diagram-hint">Road view shows the car on the banked track.</p>
           </div>
 
@@ -73,7 +64,6 @@
               <button type="button" class="preset-button" data-preset="friction">High friction</button>
             </div>
           </div>
-
         </div>
       </aside>
 
@@ -107,13 +97,26 @@
           <div class="panel-section stack">
             <h2>Formula Explorer</h2>
             <div class="formula-box">
-              <p class="formula-main"><span class="formula-symbol">v = √(r g tan θ)</span></p>
+              <p class="formula-main"><span class="formula-symbol">v = &radic;(r g tan &theta;)</span></p>
               <p class="formula-sub">Ideal frictionless speed for a banked curve.</p>
             </div>
             <div class="formula-grid">
               <div>
                 <label class="label-strong" for="solve-for">Solve for</label>
                 <select id="solve-for"></select>
+              </div>
+              <div>
+                <label class="label-strong" for="sig-figs">Significant figures</label>
+                <select id="sig-figs">
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+              <div class="formula-box">
+                <p class="formula-main" id="formula-substitution"></p>
+                <p class="formula-sub">Live substitution with the current values.</p>
               </div>
               <div id="formula-inputs" class="stack"></div>
               <div class="formula-result" id="formula-result">Result updates the simulation sliders.</div>
@@ -123,11 +126,11 @@
           <div id="friction-formulas" class="panel-section stack">
             <h3>Friction Limits</h3>
             <div class="formula-box">
-              <p class="formula-main"><span class="formula-symbol">v<sub>max</sub> = √(r g (sin θ + μ cos θ) / (cos θ - μ sin θ))</span></p>
+              <p class="formula-main"><span class="formula-symbol">v<sub>max</sub> = &radic;(r g (sin &theta; + &mu; cos &theta;) / (cos &theta; - &mu; sin &theta;))</span></p>
               <p class="formula-sub">Maximum speed before the car slides up the bank.</p>
             </div>
             <div class="formula-box">
-              <p class="formula-main"><span class="formula-symbol">v<sub>min</sub> = √(r g (sin θ - μ cos θ) / (cos θ + μ sin θ))</span></p>
+              <p class="formula-main"><span class="formula-symbol">v<sub>min</sub> = &radic;(r g (sin &theta; - &mu; cos &theta;) / (cos &theta; + &mu; sin &theta;))</span></p>
               <p class="formula-sub">Minimum speed before the car slides down the bank.</p>
             </div>
           </div>

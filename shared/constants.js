@@ -7,11 +7,10 @@ export const PHYSICS_DEFAULTS = {
   frictionEnabled: true,
   g: 9.81,
   diagramMode: "road",
-  showPrediction: true,
   solveFor: "velocity",
   scaleVectorsByMagnitude: true,
   showComponents: false,
-  highContrast: false,
+  sigFigs: 3,
 };
 
 export const RANGE_CONFIG = {

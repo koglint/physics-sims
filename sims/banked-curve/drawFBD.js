@@ -3,9 +3,9 @@ import { drawArrow, scaleVectorByMagnitude } from "../../shared/vectors.js";
 
 export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
-  const origin = { x: width * 0.48, y: height * 0.56 };
-  const maxForce = 30000;
-  const baseScale = Math.min(width, height) * 0.26;
+  const origin = { x: width * 0.44, y: height * 0.63 };
+  const maxForce = 22000;
+  const baseScale = Math.min(width, height) * 0.42;
 
   ctx.save();
   ctx.fillStyle = "#102a2a";
@@ -20,15 +20,15 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
     weight: 700,
   });
 
-  const normalLength = getLength(physics.normalForce, maxForce, 28, baseScale, state.scaleVectorsByMagnitude);
+  const normalLength = getLength(physics.normalForce, maxForce, 60, baseScale, state.scaleVectorsByMagnitude);
   const frictionLength = getLength(
     Math.abs(physics.frictionActualSigned),
     maxForce,
-    18,
-    baseScale * 0.9,
+    40,
+    baseScale * 0.95,
     state.scaleVectorsByMagnitude,
   );
-  const weightLength = getLength(physics.weight, maxForce, 28, baseScale, state.scaleVectorsByMagnitude);
+  const weightLength = getLength(physics.weight, maxForce, 60, baseScale, state.scaleVectorsByMagnitude);
   const normalVector = {
     x: Math.sin(physics.thetaRadians) * normalLength,
     y: -Math.cos(physics.thetaRadians) * normalLength,
@@ -51,7 +51,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
     ctx,
     origin.x,
     origin.y,
-    Math.max(24, normalLength * 0.34),
+    Math.max(30, normalLength * 0.34),
     -Math.PI / 2,
     -Math.PI / 2 + physics.thetaRadians,
     "θ",
@@ -70,45 +70,45 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
       width: 2,
     });
     drawArrow(ctx, {
-        x: origin.x,
-        y: origin.y,
-        dx: Math.sin(physics.thetaRadians) * normalLength,
-        dy: 0,
-        color: vectorMeta.normalComponents.color,
-        label: "FNx",
+      x: origin.x,
+      y: origin.y,
+      dx: Math.sin(physics.thetaRadians) * normalLength,
+      dy: 0,
+      color: vectorMeta.normalComponents.color,
+      label: "FNx",
       dashed: true,
       width: 2,
     });
   }
 
   if (state.showComponents && state.frictionEnabled && vectorMeta.frictionComponents?.visible) {
-      drawArrow(ctx, {
-        x: origin.x,
-        y: origin.y,
-        dx: Math.cos(physics.thetaRadians) * frictionLength * frictionDirection,
-        dy: 0,
-        color: vectorMeta.frictionComponents.color,
-        label: "Ffx",
-        dashed: true,
-        width: 2,
-        alpha: 0.8,
-      });
-      drawArrow(ctx, {
-        x: origin.x,
-        y: origin.y,
-        dx: 0,
-        dy: Math.sin(physics.thetaRadians) * frictionLength * frictionDirection,
-        color: vectorMeta.frictionComponents.color,
-        label: "Ffy",
-        dashed: true,
-        width: 2,
-        alpha: 0.8,
-      });
+    drawArrow(ctx, {
+      x: origin.x,
+      y: origin.y,
+      dx: Math.cos(physics.thetaRadians) * frictionLength * frictionDirection,
+      dy: 0,
+      color: vectorMeta.frictionComponents.color,
+      label: "Ffx",
+      dashed: true,
+      width: 2,
+      alpha: 0.8,
+    });
+    drawArrow(ctx, {
+      x: origin.x,
+      y: origin.y,
+      dx: 0,
+      dy: Math.sin(physics.thetaRadians) * frictionLength * frictionDirection,
+      color: vectorMeta.frictionComponents.color,
+      label: "Ffy",
+      dashed: true,
+      width: 2,
+      alpha: 0.8,
+    });
   }
 }
 
 function getLength(value, maxForce, minLength, maxLength, useMagnitudeScaling) {
-  return useMagnitudeScaling ? scaleVectorByMagnitude(value, maxForce, minLength, maxLength) : maxLength * 0.72;
+  return useMagnitudeScaling ? scaleVectorByMagnitude(value, maxForce, minLength, maxLength) : maxLength * 0.82;
 }
 
 function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
