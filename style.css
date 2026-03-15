@@ -224,6 +224,12 @@ a {
   min-height: calc(100vh - 10.5rem);
 }
 
+.canvas-column {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
 .panel {
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -321,6 +327,10 @@ a {
   min-height: 0;
 }
 
+.vector-panel .panel-inner {
+  padding-top: 0.75rem;
+}
+
 .canvas-wrap {
   position: relative;
   height: clamp(18rem, 48vh, 31rem);
@@ -408,7 +418,6 @@ a {
   margin-bottom: 0.35rem;
 }
 
-.controls-panel,
 .formula-panel {
   max-height: calc(100vh - 10.5rem);
   overflow: auto;
@@ -438,6 +447,10 @@ body.high-contrast {
     order: 2;
   }
 
+  .canvas-column {
+    order: 2;
+  }
+
   .panel.controls-panel {
     order: 1;
   }
@@ -446,7 +459,6 @@ body.high-contrast {
     order: 3;
   }
 
-  .controls-panel,
   .formula-panel {
     max-height: none;
     overflow: visible;
@@ -464,7 +476,7 @@ body.high-contrast {
     justify-content: center;
   }
 
-  .canvas-panel {
+  .canvas-column {
     order: 1;
   }
 

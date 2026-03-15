@@ -74,25 +74,32 @@
             </div>
           </div>
 
-          <div class="panel-section stack">
-            <h3>Vector Controls</h3>
-            <div class="checkbox-row">
-              <input id="vector-scale-toggle" type="checkbox">
-              <label for="vector-scale-toggle" class="label-strong">Scale vectors by magnitude</label>
-            </div>
-            <div id="vector-controls" class="stack"></div>
-          </div>
         </div>
       </aside>
 
-      <section class="panel canvas-panel">
-        <div class="canvas-wrap" id="canvas-container">
-          <canvas id="sim-canvas" aria-label="Banked curve simulation canvas"></canvas>
-        </div>
-        <div class="canvas-caption">
-          <span id="mode-caption">Road View</span>
-          <span id="physics-caption">Static friction balances the required centripetal motion.</span>
-        </div>
+      <section class="canvas-column">
+        <section class="panel canvas-panel">
+          <div class="canvas-wrap" id="canvas-container">
+            <canvas id="sim-canvas" aria-label="Banked curve simulation canvas"></canvas>
+          </div>
+          <div class="canvas-caption">
+            <span id="mode-caption">Road View</span>
+            <span id="physics-caption">Static friction balances the required centripetal motion.</span>
+          </div>
+        </section>
+
+        <section class="panel vector-panel">
+          <div class="panel-inner stack">
+            <div class="panel-section stack">
+              <h3>Vector Controls</h3>
+              <div class="checkbox-row">
+                <input id="vector-scale-toggle" type="checkbox">
+                <label for="vector-scale-toggle" class="label-strong">Scale vectors by magnitude</label>
+              </div>
+              <div id="vector-controls" class="stack"></div>
+            </div>
+          </div>
+        </section>
       </section>
 
       <aside class="panel formula-panel">

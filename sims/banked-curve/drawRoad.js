@@ -4,14 +4,14 @@ import { drawArrow, scaleVectorByMagnitude } from "../../shared/vectors.js";
 export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
   const centerX = width * 0.52;
-  const centerY = height * 0.7;
-  const roadLength = Math.min(width, height) * 0.52;
+  const centerY = height * 0.66;
+  const roadLength = Math.min(width, height) * 0.58;
   const carWidth = roadLength * 0.16;
   const carHeight = roadLength * 0.07;
   const angle = physics.thetaRadians;
-  const leftEnd = {
-    x: centerX - Math.cos(angle) * roadLength * 0.55,
-    y: centerY - Math.sin(angle) * roadLength * 0.55,
+  const rightEnd = {
+    x: centerX + Math.cos(angle) * roadLength * 0.55,
+    y: centerY + Math.sin(angle) * roadLength * 0.55,
   };
 
   ctx.save();
@@ -37,8 +37,8 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   ctx.strokeStyle = "#8f877b";
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.moveTo(leftEnd.x - roadLength * 0.1, leftEnd.y);
-  ctx.lineTo(leftEnd.x + roadLength * 0.48, leftEnd.y);
+  ctx.moveTo(rightEnd.x - roadLength * 0.52, rightEnd.y);
+  ctx.lineTo(rightEnd.x + roadLength * 0.08, rightEnd.y);
   ctx.stroke();
   ctx.restore();
 
@@ -50,38 +50,38 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
 
   drawAngleArc(
     ctx,
-    leftEnd.x + roadLength * 0.03,
-    leftEnd.y,
-    Math.max(28, roadLength * 0.14),
-    0,
-    physics.thetaRadians,
+    rightEnd.x - roadLength * 0.02,
+    rightEnd.y,
+    Math.max(32, roadLength * 0.15),
+    Math.PI - angle,
+    Math.PI,
     "theta",
-    { labelOffset: 12 },
+    { labelOffset: 14 },
   );
 
   const origin = { x: centerX, y: centerY - roadLength * 0.07 };
-  const maxForce = 22000;
-  const baseScale = Math.min(width, height) * 0.34;
-  const weightVector = { x: 0, y: getLength(physics.weight, maxForce, 42, baseScale, state.scaleVectorsByMagnitude) };
-  const normalLength = getLength(physics.normalForce, maxForce, 42, baseScale, state.scaleVectorsByMagnitude);
+  const maxForce = 18000;
+  const baseScale = Math.min(width, height) * 0.42;
+  const weightVector = { x: 0, y: getLength(physics.weight, maxForce, 56, baseScale, state.scaleVectorsByMagnitude) };
+  const normalLength = getLength(physics.normalForce, maxForce, 56, baseScale, state.scaleVectorsByMagnitude);
   const normalVector = {
-    x: Math.sin(physics.thetaRadians) * normalLength,
-    y: -Math.cos(physics.thetaRadians) * normalLength,
+    x: Math.sin(angle) * normalLength,
+    y: -Math.cos(angle) * normalLength,
   };
   const frictionLength = getLength(
     Math.abs(physics.frictionActualSigned),
     maxForce,
-    24,
-    baseScale * 0.92,
+    36,
+    baseScale,
     state.scaleVectorsByMagnitude,
   );
   const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
   const frictionVector = {
-    x: Math.cos(physics.thetaRadians) * frictionLength * frictionDirection,
-    y: Math.sin(physics.thetaRadians) * frictionLength * frictionDirection,
+    x: Math.cos(angle) * frictionLength * frictionDirection,
+    y: Math.sin(angle) * frictionLength * frictionDirection,
   };
   const centripetalVector = {
-    x: getLength(physics.centripetalForce, maxForce, 28, baseScale, state.scaleVectorsByMagnitude),
+    x: getLength(physics.centripetalForce, maxForce, 38, baseScale, state.scaleVectorsByMagnitude),
     y: 0,
   };
 
@@ -106,7 +106,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
 }
 
 function getLength(value, maxForce, minLength, maxLength, useMagnitudeScaling) {
-  return useMagnitudeScaling ? scaleVectorByMagnitude(value, maxForce, minLength, maxLength) : maxLength * 0.72;
+  return useMagnitudeScaling ? scaleVectorByMagnitude(value, maxForce, minLength, maxLength) : maxLength * 0.82;
 }
 
 function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
