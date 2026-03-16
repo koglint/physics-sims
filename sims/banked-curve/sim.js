@@ -6,7 +6,7 @@ import { drawFBDView } from "./drawFBD.js";
 import { createFormulaPanel } from "./formula.js";
 import { drawRoadView } from "./drawRoad.js";
 import { drawTopView } from "./drawTop.js";
-import { calculatePhysics, getPredictionCopy } from "./physics.js";
+import { calculatePhysics, getPredictionCopy, solveIdealEquation } from "./physics.js";
 
 const state = {
   ...PHYSICS_DEFAULTS,
@@ -36,6 +36,7 @@ initSimulation();
 
 export function initSimulation() {
   loadStateFromUrl();
+  syncRoadViewVelocity();
   buildSliderControls();
   buildVectorControls();
   populateDiagramModes();
@@ -113,6 +114,7 @@ export function updateUI() {
 
 export function resetSimulation() {
   Object.assign(state, PHYSICS_DEFAULTS, { vectors: structuredClone(VECTOR_DEFAULTS) });
+  syncRoadViewVelocity();
   updateUrl();
   markDirty("all");
 }
@@ -185,6 +187,9 @@ function bindInputs() {
       }
 
       state[key] = Number.parseFloat(event.target.value);
+      if (key === "theta" || key === "radius" || key === "g") {
+        syncRoadViewVelocity();
+      }
       markDirty("all");
     });
   });
@@ -208,6 +213,7 @@ function bindInputs() {
 
     state.diagramMode = button.dataset.mode;
     document.querySelector("#diagram-mode").value = state.diagramMode;
+    syncRoadViewVelocity();
     markDirty("all");
   });
 
@@ -254,7 +260,22 @@ function bindInputs() {
 
 function applyStatePatch(patch) {
   Object.assign(state, patch);
+  syncRoadViewVelocity();
   markDirty("all");
+}
+
+function syncRoadViewVelocity() {
+  if (state.diagramMode !== "road") {
+    return;
+  }
+
+  const idealVelocity = solveIdealEquation("velocity", {
+    theta: state.theta,
+    radius: state.radius,
+    g: state.g,
+  });
+  const config = RANGE_CONFIG.velocity;
+  state.velocity = Math.min(config.max, Math.max(config.min, idealVelocity));
 }
 
 function drawScene(timestamp) {

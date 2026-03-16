@@ -30,6 +30,8 @@ export function drawArrow(ctx, options) {
     width = 3,
     head = 12,
     alpha = 1,
+    labelPosition = "tip",
+    labelOffset = 14,
   } = options;
 
   ctx.save();
@@ -65,9 +67,20 @@ export function drawArrow(ctx, options) {
   if (label) {
     ctx.setLineDash([]);
     ctx.font = "600 16px 'Source Sans 3', sans-serif";
-    ctx.textAlign = dx >= 0 ? "left" : "right";
-    ctx.textBaseline = "bottom";
-    ctx.fillText(label, endX + (dx >= 0 ? 8 : -8), endY - 6);
+    if (labelPosition === "middle") {
+      const direction = normalize(dx, dy);
+      const normalX = -direction.y;
+      const normalY = direction.x;
+      const midX = x + dx * 0.5;
+      const midY = y + dy * 0.5;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(label, midX + normalX * labelOffset, midY + normalY * labelOffset);
+    } else {
+      ctx.textAlign = dx >= 0 ? "left" : "right";
+      ctx.textBaseline = "bottom";
+      ctx.fillText(label, endX + (dx >= 0 ? 8 : -8), endY - 6);
+    }
   }
 
   ctx.restore();

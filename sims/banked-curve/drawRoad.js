@@ -125,6 +125,7 @@ function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
     dy: vector.y,
     color: config.color,
     label,
+    labelPosition: "middle",
   });
 }
 
@@ -139,5 +140,6 @@ function drawComponentVector(ctx, origin, vector, color, label) {
     dashed: true,
     width: 2,
     alpha: 0.9,
+    labelPosition: "middle",
   });
 }
