@@ -136,23 +136,23 @@ function getFieldsForSolve(state) {
   if (state.solveFor === "velocity") {
     return [
       { key: "radius", label: "r =", unit: "m", step: "0.1", value: state.radius },
-      { key: "theta", label: "&theta; =", unit: "deg", step: "0.1", value: state.theta },
-      { key: "g", label: "g =", unit: "m.s^-2 downward", step: "0.01", value: state.g },
+      { key: "theta", label: "&theta; =", unit: "°", step: "0.1", value: state.theta },
+      { key: "g", label: "g =", unit: "m.s⁻² downward", step: "0.01", value: state.g },
     ];
   }
 
   if (state.solveFor === "bank angle") {
     return [
-      { key: "velocity", label: "v =", unit: "m.s^-1 tangent", step: "0.1", value: state.velocity },
+      { key: "velocity", label: "v =", unit: "m.s⁻¹ tangent", step: "0.1", value: state.velocity },
       { key: "radius", label: "r =", unit: "m", step: "0.1", value: state.radius },
-      { key: "g", label: "g =", unit: "m.s^-2 downward", step: "0.01", value: state.g },
+      { key: "g", label: "g =", unit: "m.s⁻² downward", step: "0.01", value: state.g },
     ];
   }
 
   return [
-    { key: "velocity", label: "v =", unit: "m.s^-1 tangent", step: "0.1", value: state.velocity },
-    { key: "theta", label: "&theta; =", unit: "deg", step: "0.1", value: state.theta },
-    { key: "g", label: "g =", unit: "m.s^-2 downward", step: "0.01", value: state.g },
+    { key: "velocity", label: "v =", unit: "m.s⁻¹ tangent", step: "0.1", value: state.velocity },
+    { key: "theta", label: "&theta; =", unit: "°", step: "0.1", value: state.theta },
+    { key: "g", label: "g =", unit: "m.s⁻² downward", step: "0.01", value: state.g },
   ];
 }
 

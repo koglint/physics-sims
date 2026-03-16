@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banked Curve Derivation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body class="sim-page derivation-page">
+  <main class="site-shell">
+    <section class="sim-header">
+      <div>
+        <p class="eyebrow">Formula Derivation</p>
+        <h1>Ideal Banked Curve Speed</h1>
+        <p class="derivation-lead">Reveal the derivation of <span class="formula-symbol">v = &radic;(r g tan &theta;)</span> one step at a time.</p>
+      </div>
+      <div class="sim-header-actions">
+        <a class="ghost-link" href="./index.html">Back to simulation</a>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-inner derivation-layout">
+        <div class="derivation-actions">
+          <button id="reveal-next-step" class="derivation-button" type="button">Reveal Next Line</button>
+          <button id="reset-steps" class="derivation-button" type="button">Start Again</button>
+        </div>
+
+        <div id="derivation-steps" class="derivation-step-list">
+          <article class="derivation-step is-hidden">
+            <span class="derivation-step-index">Step 1</span>
+            <p class="derivation-formula">Resolve the normal force into components on the banked road.</p>
+          </article>
+          <article class="derivation-step is-hidden">
+            <span class="derivation-step-index">Step 2</span>
+            <p class="derivation-formula">F<sub>N</sub> cos &theta; = m g</p>
+          </article>
+          <article class="derivation-step is-hidden">
+            <span class="derivation-step-index">Step 3</span>
+            <p class="derivation-formula">F<sub>N</sub> sin &theta; = m v<sup>2</sup> / r</p>
+          </article>
+          <article class="derivation-step is-hidden">
+            <span class="derivation-step-index">Step 4</span>
+            <p class="derivation-formula">Divide the horizontal equation by the vertical equation.</p>
+          </article>
+          <article class="derivation-step is-hidden">
+            <span class="derivation-step-index">Step 5</span>
+            <p class="derivation-formula">(F<sub>N</sub> sin &theta;) / (F<sub>N</sub> cos &theta;) = (m v<sup>2</sup> / r) / (m g)</p>
+          </article>
+          <article class="derivation-step is-hidden">
+            <span class="derivation-step-index">Step 6</span>
+            <p class="derivation-formula">tan &theta; = v<sup>2</sup> / (r g)</p>
+          </article>
+          <article class="derivation-step is-hidden">
+            <span class="derivation-step-index">Step 7</span>
+            <p class="derivation-formula">v<sup>2</sup> = r g tan &theta;</p>
+          </article>
+          <article class="derivation-step is-hidden">
+            <span class="derivation-step-index">Step 8</span>
+            <p class="derivation-formula">v = &radic;(r g tan &theta;)</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./derivation.js"></script>
+</body>
+</html>

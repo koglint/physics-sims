@@ -96,8 +96,9 @@ export function updateUI() {
 
   document.querySelectorAll("[data-vector-key]").forEach((row) => {
     const key = row.getAttribute("data-vector-key");
-    row.querySelector('input[type="checkbox"]').checked = state.vectors[key].visible;
     row.querySelector('input[type="color"]').value = state.vectors[key].color;
+    row.classList.toggle("is-off", !state.vectors[key].visible);
+    row.querySelector("[data-vector-toggle]").setAttribute("aria-pressed", String(state.vectors[key].visible));
   });
 
   document.querySelector("#metrics-grid").innerHTML = buildMetricsMarkup(runtime.physics);
@@ -150,9 +151,8 @@ function buildVectorControls() {
     row.className = "vector-row";
     row.dataset.vectorKey = key;
     row.innerHTML = `
-      <label for="vector-${key}" class="label-strong">${labels[key]}</label>
-      <input id="vector-${key}" type="checkbox" ${config.visible ? "checked" : ""}>
       <input id="vector-color-${key}" type="color" value="${config.color}" aria-label="${labels[key]} colour">
+      <button id="vector-${key}" type="button" class="vector-toggle label-strong" data-vector-toggle aria-pressed="${config.visible ? "true" : "false"}">${labels[key]}</button>
     `;
     container.append(row);
   });
@@ -197,6 +197,24 @@ function bindInputs() {
     markDirty("all");
   });
 
+  document.querySelector("#vector-controls").addEventListener("click", (event) => {
+    const target = event.target;
+    const toggle = target.closest("[data-vector-toggle]");
+    if (!toggle) {
+      return;
+    }
+
+    const row = target.closest("[data-vector-key]");
+    if (!row) {
+      return;
+    }
+
+    const key = row.dataset.vectorKey;
+    state.vectors[key].visible = !state.vectors[key].visible;
+    markDirty("ui");
+    markDirty("render");
+  });
+
   document.querySelector("#vector-controls").addEventListener("input", (event) => {
     const target = event.target;
     const row = target.closest("[data-vector-key]");
@@ -205,9 +223,6 @@ function bindInputs() {
     }
 
     const key = row.dataset.vectorKey;
-    if (target.type === "checkbox") {
-      state.vectors[key].visible = target.checked;
-    }
     if (target.type === "color") {
       state.vectors[key].color = target.value;
     }

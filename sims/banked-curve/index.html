@@ -13,10 +13,10 @@
   <main class="site-shell" id="sim-root">
     <header class="sim-header">
       <div>
-        <p class="eyebrow">Mechanics Simulation</p>
+        <p class="eyebrow">Advanced Mechanics Simulation</p>
         <h1>Banked Curve</h1>
         <p class="sim-subtitle">
-          Compare the ideal banking speed with real motion, explore force vectors, and switch between road, free-body,
+          Determine the ideal banking speed, explore force vectors, and switch between road, free-body,
           and top-down views.
         </p>
       </div>
@@ -53,7 +53,7 @@
           </div>
           <div class="canvas-caption">
             <span id="mode-caption">Road View</span>
-            <span id="physics-caption">Static friction balances the required centripetal motion.</span>
+            <span id="physics-caption">Ideal speed is set by the bank angle with no friction contribution.</span>
           </div>
         </section>
 
@@ -103,6 +103,14 @@
           <div class="panel-section">
             <h3>Data Readout</h3>
             <div class="metrics-grid" id="metrics-grid"></div>
+          </div>
+
+          <div class="panel-section">
+            <h3>Derivations</h3>
+            <a class="derivation-launch" href="./derivation.html" target="_blank" rel="noopener">
+              <strong>Open step-by-step derivation</strong>
+              <span>Reveal the derivation of <span class="formula-symbol">v = &radic;(r g tan &theta;)</span> one line at a time.</span>
+            </a>
           </div>
         </div>
       </aside>
