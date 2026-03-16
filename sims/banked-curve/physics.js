@@ -22,8 +22,12 @@ export function calculatePhysics(state) {
   const frictionActualSigned = state.frictionEnabled
     ? clamp(frictionRequiredSigned, -frictionLimit, frictionLimit)
     : 0;
+  const normalX = normalForce * Math.sin(theta);
+  const normalY = normalForce * Math.cos(theta);
+  const frictionX = frictionActualSigned * Math.cos(theta);
+  const frictionY = frictionActualSigned * Math.sin(theta);
   const centripetalForce = state.mass * centripetalAcceleration;
-  const providedCentripetal = normalForce * Math.sin(theta) + frictionActualSigned * Math.cos(theta);
+  const providedCentripetal = normalX + frictionX;
   const frictionDirection = getFrictionDirection(frictionRequiredSigned, state.frictionEnabled);
   const skidState = Math.abs(frictionRequiredSigned) > frictionLimit + 1e-6
     ? frictionRequiredSigned > 0
@@ -35,11 +39,15 @@ export function calculatePhysics(state) {
     thetaRadians: theta,
     weight,
     normalForce,
+    normalX,
+    normalY,
     centripetalForce,
     centripetalAcceleration,
     providedCentripetal,
     frictionRequiredSigned,
     frictionActualSigned,
+    frictionX,
+    frictionY,
     frictionMagnitude: Math.abs(frictionActualSigned),
     frictionLimit,
     idealSpeed,

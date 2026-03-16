@@ -21,13 +21,14 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const normalVector = normalDisplay.vector;
   const normalXLength = normalDisplay.xLength;
   const normalYLength = normalDisplay.yLength;
-  const centripetalLength = state.frictionEnabled ? mainScale(physics.centripetalForce) : normalXLength;
-  const frictionXLength = componentScale(Math.abs(physics.frictionActualSigned * Math.cos(angle)));
-  const frictionYLength = componentScale(Math.abs(physics.frictionActualSigned * Math.sin(angle)));
+  const frictionXLength = componentScale(Math.abs(physics.frictionX));
+  const frictionYLength = componentScale(Math.abs(physics.frictionY));
+  const centripetalLength = Math.max(0, normalXLength + frictionXLength * frictionDirection);
   const frictionVector = {
     x: Math.cos(angle) * frictionLength * frictionDirection,
     y: Math.sin(angle) * frictionLength * frictionDirection,
   };
+  const frictionYTip = { x: origin.x, y: origin.y + frictionYLength * frictionDirection };
 
   ctx.save();
   ctx.fillStyle = "#102a2a";
@@ -61,8 +62,8 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   }
 
   if (state.frictionEnabled && vectorMeta.frictionComponents?.visible) {
-    drawComponentVector(ctx, origin, { x: frictionXLength * frictionDirection, y: 0 }, vectorMeta.frictionComponents.color, "Ffx");
     drawComponentVector(ctx, origin, { x: 0, y: frictionYLength * frictionDirection }, vectorMeta.frictionComponents.color, "Ffy");
+    drawComponentVector(ctx, frictionYTip, { x: frictionXLength * frictionDirection, y: 0 }, vectorMeta.frictionComponents.color, "Ffx");
   }
 }
 

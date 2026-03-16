@@ -30,7 +30,7 @@ export const VECTOR_DEFAULTS = {
   centripetal: { visible: true, color: "#2a4d9b" },
   velocity: { visible: true, color: "#7a3ec8" },
   normalComponents: { visible: true, color: "#425466" },
-  frictionComponents: { visible: false, color: "#6c757d" },
+  frictionComponents: { visible: true, color: "#6c757d" },
 };
 
 export const DIAGRAM_MODES = [

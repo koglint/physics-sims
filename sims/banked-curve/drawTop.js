@@ -14,7 +14,7 @@ export function drawTopView(ctx, bounds, state, physics, vectorMeta, animationTi
   const carY = centerY + Math.sin(angle) * trackRadius;
   const inward = { x: centerX - carX, y: centerY - carY };
   const tangent = { x: -Math.sin(angle), y: Math.cos(angle) };
-  const maxForce = Math.max(physics.centripetalForce, Math.abs(physics.frictionActualSigned), state.velocity, 1);
+  const maxForce = Math.max(physics.providedCentripetal, Math.abs(physics.frictionActualSigned), state.velocity, 1);
   const baseScale = Math.min(width, height) * 0.24;
 
   drawDashedCircle(ctx, centerX, centerY, trackRadius, "#7a8f89");
@@ -38,7 +38,7 @@ export function drawTopView(ctx, bounds, state, physics, vectorMeta, animationTi
   ctx.stroke();
   ctx.restore();
 
-  const centripetalLength = getLength(physics.centripetalForce, maxForce, 24, baseScale, state.scaleVectorsByMagnitude);
+  const centripetalLength = getLength(physics.providedCentripetal, maxForce, 24, baseScale, state.scaleVectorsByMagnitude);
   const velocityLength = getLength(state.velocity, Math.max(state.velocity, 1), 30, baseScale * 0.85, state.scaleVectorsByMagnitude);
   const frictionLength = getLength(
     Math.abs(physics.frictionActualSigned),
