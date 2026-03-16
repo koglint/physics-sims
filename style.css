@@ -617,10 +617,12 @@ a {
   justify-content: stretch;
 }
 
-.derivation-diagram {
+.derivation-canvas {
   width: 100%;
   height: auto;
+  aspect-ratio: 320 / 220;
   display: block;
+  border-radius: 1.1rem;
 }
 
 .diagram-sky {

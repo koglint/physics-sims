@@ -36,18 +36,7 @@
               <p class="derivation-formula">Resolve the normal force into components on the banked road.</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <svg viewBox="0 0 260 160" class="derivation-diagram">
-                <rect x="0" y="0" width="260" height="160" rx="24" class="diagram-sky" />
-                <path d="M38 124 L204 74" class="diagram-road" />
-                <rect x="112" y="80" width="42" height="24" rx="8" transform="rotate(-17 133 92)" class="diagram-car" />
-                <circle cx="132" cy="92" r="4" class="diagram-anchor" />
-                <line x1="132" y1="92" x2="98" y2="40" class="diagram-force" />
-                <line x1="132" y1="92" x2="132" y2="38" class="diagram-component-vertical" />
-                <line x1="132" y1="92" x2="180" y2="92" class="diagram-component-horizontal" />
-                <text x="88" y="34" class="diagram-label">F<tspan baseline-shift="sub">N</tspan></text>
-                <text x="136" y="34" class="diagram-label">F<tspan baseline-shift="sub">N</tspan> cos θ</text>
-                <text x="184" y="86" class="diagram-label">F<tspan baseline-shift="sub">N</tspan> sin θ</text>
-              </svg>
+              <canvas class="derivation-canvas" data-step="1"></canvas>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -56,17 +45,7 @@
               <p class="derivation-formula">F<sub>N</sub> cos &theta; = m g</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <svg viewBox="0 0 260 160" class="derivation-diagram">
-                <rect x="0" y="0" width="260" height="160" rx="24" class="diagram-sky" />
-                <path d="M42 124 L208 74" class="diagram-road" />
-                <rect x="114" y="80" width="40" height="22" rx="8" transform="rotate(-17 134 91)" class="diagram-car" />
-                <circle cx="134" cy="90" r="4" class="diagram-anchor" />
-                <line x1="134" y1="90" x2="134" y2="38" class="diagram-component-vertical" />
-                <line x1="134" y1="90" x2="134" y2="142" class="diagram-weight" />
-                <text x="140" y="42" class="diagram-label">F<tspan baseline-shift="sub">N</tspan> cos θ</text>
-                <text x="143" y="136" class="diagram-label">mg</text>
-                <text x="84" y="24" class="diagram-caption">Vertical forces balance</text>
-              </svg>
+              <canvas class="derivation-canvas" data-step="2"></canvas>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -75,17 +54,7 @@
               <p class="derivation-formula">F<sub>N</sub> sin &theta; = m v<sup>2</sup> / r</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <svg viewBox="0 0 260 160" class="derivation-diagram">
-                <rect x="0" y="0" width="260" height="160" rx="24" class="diagram-sky" />
-                <path d="M36 124 Q130 96 224 76" class="diagram-road" />
-                <rect x="118" y="85" width="40" height="22" rx="8" transform="rotate(-12 138 96)" class="diagram-car" />
-                <circle cx="138" cy="96" r="4" class="diagram-anchor" />
-                <line x1="138" y1="96" x2="188" y2="96" class="diagram-component-horizontal" />
-                <path d="M78 112 Q138 34 214 46" class="diagram-radius" />
-                <text x="191" y="88" class="diagram-label">F<tspan baseline-shift="sub">N</tspan> sin θ</text>
-                <text x="146" y="42" class="diagram-label">m v² / r</text>
-                <text x="70" y="126" class="diagram-caption">Inward force provides centripetal motion</text>
-              </svg>
+              <canvas class="derivation-canvas" data-step="3"></canvas>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -94,14 +63,7 @@
               <p class="derivation-formula">Divide the horizontal equation by the vertical equation.</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <svg viewBox="0 0 260 160" class="derivation-diagram">
-                <rect x="16" y="26" width="228" height="44" rx="16" class="diagram-card" />
-                <rect x="16" y="92" width="228" height="44" rx="16" class="diagram-card" />
-                <line x1="40" y1="80" x2="220" y2="80" class="diagram-divider" />
-                <text x="36" y="54" class="diagram-equation">F<tspan baseline-shift="sub">N</tspan> sin θ = m v² / r</text>
-                <text x="36" y="120" class="diagram-equation">F<tspan baseline-shift="sub">N</tspan> cos θ = m g</text>
-                <text x="108" y="86" class="diagram-caption">divide</text>
-              </svg>
+              <canvas class="derivation-canvas" data-step="4"></canvas>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -110,17 +72,7 @@
               <p class="derivation-formula">(F<sub>N</sub> sin &theta;) / (F<sub>N</sub> cos &theta;) = (m v<sup>2</sup> / r) / (m g)</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <svg viewBox="0 0 260 160" class="derivation-diagram">
-                <rect x="14" y="22" width="108" height="116" rx="18" class="diagram-card" />
-                <rect x="138" y="22" width="108" height="116" rx="18" class="diagram-card" />
-                <line x1="30" y1="78" x2="106" y2="78" class="diagram-divider" />
-                <line x1="154" y1="78" x2="230" y2="78" class="diagram-divider" />
-                <text x="38" y="58" class="diagram-equation">F<tspan baseline-shift="sub">N</tspan> sin θ</text>
-                <text x="38" y="104" class="diagram-equation">F<tspan baseline-shift="sub">N</tspan> cos θ</text>
-                <text x="126" y="86" class="diagram-equation">=</text>
-                <text x="166" y="58" class="diagram-equation">m v² / r</text>
-                <text x="184" y="104" class="diagram-equation">m g</text>
-              </svg>
+              <canvas class="derivation-canvas" data-step="5"></canvas>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -129,17 +81,7 @@
               <p class="derivation-formula">tan &theta; = v<sup>2</sup> / (r g)</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <svg viewBox="0 0 260 160" class="derivation-diagram">
-                <rect x="18" y="24" width="224" height="112" rx="20" class="diagram-card" />
-                <line x1="96" y1="48" x2="96" y2="112" class="diagram-cancel" />
-                <line x1="173" y1="48" x2="173" y2="112" class="diagram-cancel" />
-                <text x="36" y="64" class="diagram-equation">sin θ</text>
-                <text x="36" y="104" class="diagram-equation">cos θ</text>
-                <text x="108" y="86" class="diagram-equation">=</text>
-                <text x="138" y="64" class="diagram-equation">v² / r</text>
-                <text x="154" y="104" class="diagram-equation">g</text>
-                <text x="34" y="130" class="diagram-caption">F<tspan baseline-shift="sub">N</tspan> and m cancel, leaving tan θ</text>
-              </svg>
+              <canvas class="derivation-canvas" data-step="6"></canvas>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -148,16 +90,7 @@
               <p class="derivation-formula">v<sup>2</sup> = r g tan &theta;</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <svg viewBox="0 0 260 160" class="derivation-diagram">
-                <rect x="18" y="24" width="224" height="112" rx="20" class="diagram-card" />
-                <text x="42" y="60" class="diagram-equation">tan θ</text>
-                <text x="104" y="60" class="diagram-equation">=</text>
-                <text x="132" y="60" class="diagram-equation">v²</text>
-                <line x1="130" y1="68" x2="182" y2="68" class="diagram-divider" />
-                <text x="140" y="96" class="diagram-equation">r g</text>
-                <path d="M84 106 C118 126 156 126 190 106" class="diagram-move-arrow" />
-                <text x="76" y="128" class="diagram-caption">Multiply both sides by r g</text>
-              </svg>
+              <canvas class="derivation-canvas" data-step="7"></canvas>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -166,13 +99,7 @@
               <p class="derivation-formula">v = &radic;(r g tan &theta;)</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <svg viewBox="0 0 260 160" class="derivation-diagram">
-                <rect x="18" y="24" width="224" height="112" rx="20" class="diagram-card" />
-                <text x="44" y="66" class="diagram-equation">v² = r g tan θ</text>
-                <path d="M108 82 C118 102 142 102 152 82" class="diagram-move-arrow" />
-                <text x="54" y="122" class="diagram-equation">v = √(r g tan θ)</text>
-                <text x="70" y="142" class="diagram-caption">Take the square root</text>
-              </svg>
+              <canvas class="derivation-canvas" data-step="8"></canvas>
             </div>
           </article>
         </div>
