@@ -26,7 +26,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   };
   const frictionXLength = Math.abs(frictionVector.x);
   const frictionYLength = Math.abs(frictionVector.y);
-  const centripetalLength = Math.max(0, normalXLength + frictionVector.x);
+  const centripetalLength = normalXLength;
   const frictionYTip = { x: origin.x, y: origin.y + frictionVector.y };
 
   ctx.save();

@@ -38,13 +38,6 @@
           </div>
 
           <div class="panel-section stack">
-            <div class="checkbox-row">
-              <input id="friction-enabled" type="checkbox">
-              <label for="friction-enabled" class="label-strong">Include friction</label>
-            </div>
-          </div>
-
-          <div class="panel-section stack">
             <div class="label-strong">Diagram mode</div>
             <div id="diagram-mode-buttons" class="mode-button-row" role="group" aria-label="Diagram mode"></div>
             <input id="diagram-mode" type="hidden">
@@ -105,23 +98,6 @@
               </div>
               <div class="formula-result" id="formula-result">Result updates the simulation sliders.</div>
             </div>
-          </div>
-
-          <div id="friction-formulas" class="panel-section stack">
-            <h3>Friction Limits</h3>
-            <div class="formula-box">
-              <p class="formula-main"><span class="formula-symbol">v<sub>max</sub> = &radic;(r g (sin &theta; + &mu; cos &theta;) / (cos &theta; - &mu; sin &theta;))</span></p>
-              <p class="formula-sub">Maximum speed before the car slides up the bank.</p>
-            </div>
-            <div class="formula-box">
-              <p class="formula-main"><span class="formula-symbol">v<sub>min</sub> = &radic;(r g (sin &theta; - &mu; cos &theta;) / (cos &theta; + &mu; sin &theta;))</span></p>
-              <p class="formula-sub">Minimum speed before the car slides down the bank.</p>
-            </div>
-          </div>
-
-          <div id="prediction-panel" class="panel-section prediction-box">
-            <strong>Prediction</strong>
-            <span id="prediction-text">Which direction will friction act?</span>
           </div>
 
           <div class="panel-section">

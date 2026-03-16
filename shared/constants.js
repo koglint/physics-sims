@@ -4,10 +4,9 @@ export const PHYSICS_DEFAULTS = {
   mass: 1200,
   radius: 50,
   mu: 0.4,
-  frictionEnabled: true,
+  frictionEnabled: false,
   g: 9.81,
   diagramMode: "road",
-  showPrediction: true,
   solveFor: "velocity",
   scaleVectorsByMagnitude: true,
   showComponents: true,
@@ -26,11 +25,11 @@ export const RANGE_CONFIG = {
 export const VECTOR_DEFAULTS = {
   weight: { visible: true, color: "#b23a48" },
   normal: { visible: true, color: "#226f54" },
-  friction: { visible: true, color: "#f4a261" },
+  friction: { visible: false, color: "#f4a261" },
   centripetal: { visible: true, color: "#2a4d9b" },
   velocity: { visible: true, color: "#7a3ec8" },
   normalComponents: { visible: true, color: "#425466" },
-  frictionComponents: { visible: true, color: "#6c757d" },
+  frictionComponents: { visible: false, color: "#6c757d" },
 };
 
 export const DIAGRAM_MODES = [

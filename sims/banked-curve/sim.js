@@ -6,7 +6,7 @@ import { drawFBDView } from "./drawFBD.js";
 import { createFormulaPanel } from "./formula.js";
 import { drawRoadView } from "./drawRoad.js";
 import { drawTopView } from "./drawTop.js";
-import { calculatePhysics, getPredictionCopy, solveIdealEquation } from "./physics.js";
+import { calculatePhysics, solveIdealEquation } from "./physics.js";
 
 const state = {
   ...PHYSICS_DEFAULTS,
@@ -28,7 +28,6 @@ const controls = [
   { key: "velocity", label: "Velocity (v)", description: "Car speed along the curve" },
   { key: "mass", label: "Mass (m)", description: "Vehicle mass" },
   { key: "radius", label: "Radius (r)", description: "Curve radius" },
-  { key: "mu", label: "Friction coefficient (μ)", description: "Static friction limit" },
   { key: "g", label: "Gravity (g)", description: "Local gravitational field" },
 ];
 
@@ -88,24 +87,19 @@ export function updateUI() {
     }
   });
 
-  document.querySelector("#friction-enabled").checked = state.frictionEnabled;
   document.querySelector("#diagram-mode").value = state.diagramMode;
-  document.querySelector("#friction-formulas").classList.toggle("is-hidden", !state.frictionEnabled);
-  document.querySelector("#status-pill").textContent = runtime.physics?.skidState === "holds" ? "Balanced" : runtime.physics?.skidState ?? "Ready";
+  document.querySelector("#status-pill").textContent = "Balanced";
   document.querySelector("#mode-caption").textContent = DIAGRAM_MODES.find((mode) => mode.value === state.diagramMode)?.label ?? "Road View";
   document.querySelector("#physics-caption").textContent = buildCaption(runtime.physics);
   document.querySelector("#diagram-hint").textContent = buildDiagramHint(state.diagramMode);
-  document.querySelector("#mu").disabled = !state.frictionEnabled;
   updateModeButtons();
 
   document.querySelectorAll("[data-vector-key]").forEach((row) => {
     const key = row.getAttribute("data-vector-key");
     row.querySelector('input[type="checkbox"]').checked = state.vectors[key].visible;
     row.querySelector('input[type="color"]').value = state.vectors[key].color;
-    row.classList.toggle("is-hidden", !state.frictionEnabled && (key === "friction" || key === "frictionComponents"));
   });
 
-  document.querySelector("#prediction-text").textContent = getPredictionCopy(runtime.physics);
   document.querySelector("#metrics-grid").innerHTML = buildMetricsMarkup(runtime.physics);
   runtime.formulaPanel?.render();
   runtime.dirtyUi = false;
@@ -142,14 +136,16 @@ function buildVectorControls() {
   const labels = {
     weight: "Weight vector",
     normal: "Normal force",
-    friction: "Friction",
     centripetal: "Centripetal",
     velocity: "Velocity",
     normalComponents: "Normal components",
-    frictionComponents: "Friction components",
   };
 
   Object.entries(state.vectors).forEach(([key, config]) => {
+    if (!(key in labels)) {
+      return;
+    }
+
     const row = document.createElement("div");
     row.className = "vector-row";
     row.dataset.vectorKey = key;
@@ -181,22 +177,12 @@ function populateDiagramModes() {
 function bindInputs() {
   controls.forEach(({ key }) => {
     document.querySelector(`#${key}`).addEventListener("input", (event) => {
-      if (key === "mu" && !state.frictionEnabled) {
-        return;
-      }
-
       state[key] = Number.parseFloat(event.target.value);
       if (key === "theta" || key === "radius" || key === "g") {
         syncIdealVelocityForDiagram();
       }
       markDirty("all");
     });
-  });
-
-  document.querySelector("#friction-enabled").addEventListener("change", (event) => {
-    state.frictionEnabled = event.target.checked;
-    state.mu = state.frictionEnabled ? Math.max(state.mu, PHYSICS_DEFAULTS.mu) : 0;
-    markDirty("all");
   });
 
   document.querySelector("#diagram-mode-buttons").addEventListener("click", (event) => {
@@ -235,7 +221,7 @@ function bindInputs() {
     await copyText(link);
     document.querySelector("#status-pill").textContent = "Link copied";
     window.setTimeout(() => {
-      document.querySelector("#status-pill").textContent = runtime.physics?.skidState === "holds" ? "Balanced" : runtime.physics?.skidState ?? "Ready";
+      document.querySelector("#status-pill").textContent = "Balanced";
     }, 1400);
   });
 
@@ -300,26 +286,15 @@ function buildMetricsMarkup(physics) {
   const entries = [
     ["Weight", `${formatNumber(physics.weight, 1)} N downward`],
     ["Normal force", `${formatNumber(physics.normalForce, 1)} N perpendicular to road`],
-    ["Friction force", `${formatNumber(physics.frictionMagnitude, 1)} N ${physics.frictionDirection.toLowerCase()}`],
     ["Centripetal force", `${formatNumber(physics.centripetalForce, 1)} N toward centre`],
     ["Ideal speed", `${formatNumber(physics.idealSpeed, 2)} m/s`],
-    ["vmax", Number.isFinite(physics.vmax) ? `${formatNumber(physics.vmax, 2)} m/s` : "Infinity"],
-    ["vmin", `${formatNumber(physics.vmin, 2)} m/s`],
   ];
 
   return entries.map(([label, value]) => `<div class="metric-row"><span>${label}</span><span>${value}</span></div>`).join("");
 }
 
 function buildCaption(physics) {
-  if (!state.frictionEnabled) {
-    return `Ideal speed is ${formatNumber(physics.idealSpeed, 2)} m/s with no friction contribution.`;
-  }
-
-  if (physics.skidState !== "holds") {
-    return `Required friction exceeds the static limit, so the car ${physics.skidState}.`;
-  }
-
-  return `${physics.frictionDirection} friction keeps the motion in equilibrium.`;
+  return `Ideal speed is ${formatNumber(physics.idealSpeed, 2)} m/s with no friction contribution.`;
 }
 
 function buildDiagramHint(mode) {
@@ -344,7 +319,6 @@ function loadStateFromUrl() {
     mass: "mass",
     r: "radius",
     radius: "radius",
-    mu: "mu",
     g: "g",
   };
 
@@ -355,13 +329,11 @@ function loadStateFromUrl() {
     }
   });
 
-  if (params.has("frictionEnabled")) {
-    state.frictionEnabled = params.get("frictionEnabled") === "true";
-  }
-
   if (params.has("diagramMode")) {
     state.diagramMode = params.get("diagramMode");
   }
+
+  state.frictionEnabled = false;
 }
 
 function updateUrl() {
@@ -375,9 +347,7 @@ function buildQueryString() {
     v: state.velocity,
     m: state.mass,
     r: state.radius,
-    mu: state.frictionEnabled ? state.mu : 0,
     g: state.g,
-    frictionEnabled: String(state.frictionEnabled),
     diagramMode: state.diagramMode,
   });
   return `?${params.toString()}`;

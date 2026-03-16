@@ -77,7 +77,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   };
   const frictionXLength = Math.abs(frictionVector.x);
   const frictionYLength = Math.abs(frictionVector.y);
-  const centripetalLength = Math.max(0, normalXLength + frictionVector.x);
+  const centripetalLength = normalXLength;
   const normalYTip = { x: carCenter.x, y: carCenter.y - normalYLength };
   const frictionYTip = { x: carCenter.x, y: carCenter.y + frictionVector.y };
 
