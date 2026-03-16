@@ -555,7 +555,7 @@ a {
 .derivation-layout {
   display: grid;
   gap: 1rem;
-  max-width: 52rem;
+  max-width: 70rem;
 }
 
 .derivation-lead {
@@ -570,6 +570,10 @@ a {
 }
 
 .derivation-step {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(15rem, 0.95fr);
+  align-items: center;
+  gap: 1rem;
   padding: 1rem 1.1rem;
   border: 1px solid rgba(34, 94, 81, 0.14);
   border-radius: 1rem;
@@ -597,10 +601,129 @@ a {
   margin: 0;
 }
 
+.derivation-step-copy {
+  display: grid;
+  gap: 0.35rem;
+}
+
 .derivation-formula {
   font-family: var(--font-display);
   font-size: clamp(1.25rem, 2.8vw, 1.8rem);
   line-height: 1.25;
+}
+
+.derivation-visual {
+  display: flex;
+  justify-content: stretch;
+}
+
+.derivation-diagram {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.diagram-sky {
+  fill: rgba(227, 240, 234, 0.9);
+}
+
+.diagram-road {
+  fill: none;
+  stroke: rgba(34, 94, 81, 0.9);
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.diagram-car {
+  fill: rgba(196, 132, 63, 0.88);
+  stroke: rgba(94, 55, 21, 0.6);
+  stroke-width: 2;
+}
+
+.diagram-anchor {
+  fill: rgba(34, 94, 81, 1);
+}
+
+.diagram-force,
+.diagram-component-vertical,
+.diagram-component-horizontal,
+.diagram-weight,
+.diagram-radius,
+.diagram-divider,
+.diagram-cancel,
+.diagram-move-arrow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.diagram-force {
+  stroke: rgba(34, 94, 81, 0.95);
+  stroke-width: 4;
+}
+
+.diagram-component-vertical {
+  stroke: rgba(86, 116, 235, 0.95);
+  stroke-width: 4;
+}
+
+.diagram-component-horizontal {
+  stroke: rgba(205, 101, 49, 0.95);
+  stroke-width: 4;
+}
+
+.diagram-weight {
+  stroke: rgba(173, 61, 54, 0.95);
+  stroke-width: 4;
+}
+
+.diagram-radius {
+  stroke: rgba(196, 132, 63, 0.9);
+  stroke-width: 3;
+  stroke-dasharray: 7 8;
+}
+
+.diagram-card {
+  fill: rgba(241, 247, 244, 0.95);
+  stroke: rgba(34, 94, 81, 0.15);
+  stroke-width: 2;
+}
+
+.diagram-divider {
+  stroke: rgba(34, 94, 81, 0.58);
+  stroke-width: 2.5;
+}
+
+.diagram-cancel {
+  stroke: rgba(173, 61, 54, 0.82);
+  stroke-width: 3;
+}
+
+.diagram-move-arrow {
+  stroke: rgba(196, 132, 63, 0.9);
+  stroke-width: 3.5;
+}
+
+.diagram-label,
+.diagram-caption,
+.diagram-equation {
+  fill: var(--text);
+  font-family: var(--font-display);
+}
+
+.diagram-label {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.diagram-equation {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.diagram-caption {
+  font-size: 14px;
+  fill: var(--muted);
 }
 
 .derivation-actions {
@@ -656,6 +779,10 @@ a {
   }
 
   .mode-button-row {
+    grid-template-columns: 1fr;
+  }
+
+  .derivation-step {
     grid-template-columns: 1fr;
   }
 }
