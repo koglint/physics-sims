@@ -26,7 +26,8 @@
       <div class="panel-inner derivation-layout">
         <div class="derivation-actions">
           <button id="reveal-next-step" class="derivation-button" type="button">Reveal Next Line</button>
-          <button id="reset-steps" class="derivation-button" type="button">Start Again</button>
+          <button id="reveal-all-steps" class="derivation-button" type="button">Reveal All Steps</button>
+          <button id="reset-steps" class="derivation-button" type="button">Hide All Steps</button>
         </div>
 
         <div id="derivation-steps" class="derivation-step-list">
@@ -36,43 +37,73 @@
               <p class="derivation-formula">Resolve the normal force into components on the banked road.</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <canvas class="derivation-canvas" data-step="1"></canvas>
+              <div class="derivation-diagram-card">
+                <canvas class="derivation-canvas" data-step="1"></canvas>
+              </div>
+              <div class="derivation-note">
+                <p class="derivation-note-title">Resolve <span class="formula-symbol">F<sub>N</sub></span> into a right triangle.</p>
+                <p class="derivation-note-body">The components use the same vertical and horizontal directions as the road-view diagram.</p>
+              </div>
             </div>
           </article>
           <article class="derivation-step is-hidden">
             <div class="derivation-step-copy">
               <span class="derivation-step-index">Step 2</span>
-              <p class="derivation-formula">F<sub>N</sub> cos &theta; = m g</p>
+              <p class="derivation-formula">F<sub>Ny</sub> = m g</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <canvas class="derivation-canvas" data-step="2"></canvas>
+              <div class="derivation-diagram-card">
+                <canvas class="derivation-canvas" data-step="2"></canvas>
+              </div>
+              <div class="derivation-note">
+                <p class="derivation-note-title">Vertical balance</p>
+                <p class="derivation-note-body"><span class="formula-symbol">F<sub>Ny</sub></span> balances <span class="formula-symbol">mg</span>.</p>
+              </div>
             </div>
           </article>
           <article class="derivation-step is-hidden">
             <div class="derivation-step-copy">
               <span class="derivation-step-index">Step 3</span>
-              <p class="derivation-formula">F<sub>N</sub> sin &theta; = m v<sup>2</sup> / r</p>
+              <p class="derivation-formula">F<sub>Nx</sub> = m v<sup>2</sup> / r</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <canvas class="derivation-canvas" data-step="3"></canvas>
+              <div class="derivation-diagram-card">
+                <canvas class="derivation-canvas" data-step="3"></canvas>
+              </div>
+              <div class="derivation-note">
+                <p class="derivation-note-title">Horizontal balance</p>
+                <p class="derivation-note-body"><span class="formula-symbol">F<sub>Nx</sub></span> provides the centripetal force <span class="formula-symbol">mv<sup>2</sup>/r</span>.</p>
+              </div>
             </div>
           </article>
           <article class="derivation-step is-hidden">
             <div class="derivation-step-copy">
               <span class="derivation-step-index">Step 4</span>
-              <p class="derivation-formula">Divide the horizontal equation by the vertical equation.</p>
+              <p class="derivation-formula">F<sub>Nx</sub> = F<sub>N</sub> sin &theta; and F<sub>Ny</sub> = F<sub>N</sub> cos &theta;</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <canvas class="derivation-canvas" data-step="4"></canvas>
+              <div class="derivation-diagram-card">
+                <canvas class="derivation-canvas" data-step="4"></canvas>
+              </div>
+              <div class="derivation-note">
+                <p class="derivation-note-title">Match each component to the triangle</p>
+                <p class="derivation-note-body">Use the geometry of the force triangle to rewrite the component equations in trig form.</p>
+              </div>
             </div>
           </article>
           <article class="derivation-step is-hidden">
             <div class="derivation-step-copy">
               <span class="derivation-step-index">Step 5</span>
-              <p class="derivation-formula">(F<sub>N</sub> sin &theta;) / (F<sub>N</sub> cos &theta;) = (m v<sup>2</sup> / r) / (m g)</p>
+              <p class="derivation-formula">(F<sub>Nx</sub> / F<sub>Ny</sub>) = (F<sub>N</sub> sin &theta; / F<sub>N</sub> cos &theta;) = (m v<sup>2</sup> / r) / (m g)</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <canvas class="derivation-canvas" data-step="5"></canvas>
+              <div class="derivation-diagram-card">
+                <canvas class="derivation-canvas" data-step="5"></canvas>
+              </div>
+              <div class="derivation-note">
+                <p class="derivation-note-title">Divide the equations</p>
+                <p class="derivation-note-body">The horizontal-to-vertical component ratio now lines up directly with a trig ratio.</p>
+              </div>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -81,7 +112,13 @@
               <p class="derivation-formula">tan &theta; = v<sup>2</sup> / (r g)</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <canvas class="derivation-canvas" data-step="6"></canvas>
+              <div class="derivation-diagram-card">
+                <canvas class="derivation-canvas" data-step="6"></canvas>
+              </div>
+              <div class="derivation-note">
+                <p class="derivation-note-title">Simplify</p>
+                <p class="derivation-note-body"><span class="formula-symbol">F<sub>N</sub></span> and <span class="formula-symbol">m</span> cancel, leaving <span class="formula-symbol">tan&nbsp;&theta;</span>.</p>
+              </div>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -90,7 +127,13 @@
               <p class="derivation-formula">v<sup>2</sup> = r g tan &theta;</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <canvas class="derivation-canvas" data-step="7"></canvas>
+              <div class="derivation-diagram-card">
+                <canvas class="derivation-canvas" data-step="7"></canvas>
+              </div>
+              <div class="derivation-note">
+                <p class="derivation-note-title">Rearrange for <span class="formula-symbol">v<sup>2</sup></span></p>
+                <p class="derivation-note-body">Multiply both sides by <span class="formula-symbol">rg</span>.</p>
+              </div>
             </div>
           </article>
           <article class="derivation-step is-hidden">
@@ -99,7 +142,13 @@
               <p class="derivation-formula">v = &radic;(r g tan &theta;)</p>
             </div>
             <div class="derivation-visual" aria-hidden="true">
-              <canvas class="derivation-canvas" data-step="8"></canvas>
+              <div class="derivation-diagram-card">
+                <canvas class="derivation-canvas" data-step="8"></canvas>
+              </div>
+              <div class="derivation-note">
+                <p class="derivation-note-title">Take the square root</p>
+                <p class="derivation-note-body">This gives the final expression <span class="formula-symbol">v = &radic;(rg&nbsp;tan&nbsp;&theta;)</span>.</p>
+              </div>
             </div>
           </article>
         </div>

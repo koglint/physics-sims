@@ -613,8 +613,17 @@ a {
 }
 
 .derivation-visual {
-  display: flex;
-  justify-content: stretch;
+  display: grid;
+  grid-template-columns: minmax(16rem, 1fr) minmax(14rem, 18rem);
+  align-items: stretch;
+  gap: 0.9rem;
+}
+
+.derivation-diagram-card {
+  padding: 0.25rem;
+  border-radius: 1.2rem;
+  background: rgba(255, 251, 244, 0.92);
+  border: 1px solid rgba(34, 94, 81, 0.12);
 }
 
 .derivation-canvas {
@@ -623,6 +632,27 @@ a {
   aspect-ratio: 320 / 220;
   display: block;
   border-radius: 1.1rem;
+}
+
+.derivation-note {
+  padding: 1rem 1rem 1rem 1.05rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(34, 94, 81, 0.14);
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.derivation-note-title {
+  margin: 0 0 0.45rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
+.derivation-note-body {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.98rem;
+  line-height: 1.45;
 }
 
 .diagram-sky {
@@ -785,6 +815,10 @@ a {
   }
 
   .derivation-step {
+    grid-template-columns: 1fr;
+  }
+
+  .derivation-visual {
     grid-template-columns: 1fr;
   }
 }

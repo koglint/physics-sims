@@ -3,6 +3,7 @@ import { drawArrow as drawSharedArrow } from "../../shared/vectors.js";
 
 const steps = Array.from(document.querySelectorAll(".derivation-step"));
 const revealButton = document.querySelector("#reveal-next-step");
+const revealAllButton = document.querySelector("#reveal-all-steps");
 const resetButton = document.querySelector("#reset-steps");
 const canvases = Array.from(document.querySelectorAll(".derivation-canvas"));
 
@@ -15,6 +16,8 @@ function render() {
 
   revealButton.disabled = visibleCount >= steps.length;
   revealButton.textContent = visibleCount >= steps.length ? "All Lines Revealed" : "Reveal Next Line";
+  revealAllButton.disabled = visibleCount >= steps.length;
+  resetButton.disabled = visibleCount === 0;
   drawDiagrams();
 }
 
@@ -23,6 +26,11 @@ revealButton.addEventListener("click", () => {
     visibleCount += 1;
     render();
   }
+});
+
+revealAllButton.addEventListener("click", () => {
+  visibleCount = steps.length;
+  render();
 });
 
 resetButton.addEventListener("click", () => {
@@ -81,10 +89,10 @@ function drawStepCard(ctx, width, height) {
 }
 
 function drawRoadScene(ctx, width, height, stepNumber) {
-  const angle = (20 * Math.PI) / 180;
-  const centerX = width * 0.34;
+  const angle = Math.PI / 4;
+  const centerX = width * 0.38;
   const centerY = height * 0.67;
-  const roadLength = Math.min(width, height) * 0.62;
+  const roadLength = Math.min(width, height) * 0.72;
   const carWidth = roadLength * 0.16;
   const carHeight = roadLength * 0.07;
   const carOffset = carHeight / 2 + 10;
@@ -99,38 +107,30 @@ function drawRoadScene(ctx, width, height, stepNumber) {
   const verticalLength = Math.min(width, height) * 0.24;
   const horizontalLength = Math.tan(angle) * verticalLength;
   const normalVector = { x: horizontalLength, y: -verticalLength };
-  const vectorTip = { x: carCenter.x + normalVector.x, y: carCenter.y + normalVector.y };
 
   drawRoadBase(ctx, centerX, centerY, roadLength, carWidth, carHeight, angle, rightEnd);
 
-  const showTriangle = stepNumber >= 1;
-  const showVerticalBalance = stepNumber >= 2;
-  const showHorizontalBalance = stepNumber >= 3;
-
-  if (showTriangle) {
+  if (stepNumber >= 1) {
     drawConfiguredArrow(ctx, carCenter, normalVector, "#226f54", "FN", 16);
     drawComponentArrow(ctx, carCenter, { x: 0, y: -verticalLength }, "#425466", "FNy", -14);
     drawComponentArrow(ctx, { x: carCenter.x, y: carCenter.y - verticalLength }, { x: horizontalLength, y: 0 }, "#425466", "FNx", -14);
-    drawSharedAngleArc(ctx, carCenter.x, carCenter.y, Math.max(24, verticalLength * 0.3), -Math.PI / 2, -Math.PI / 2 + angle, "20°", {
+    drawSharedAngleArc(ctx, carCenter.x, carCenter.y, Math.max(24, verticalLength * 0.32), -Math.PI / 2, -Math.PI / 2 + angle, "θ", {
       color: "#225e51",
       labelOffset: 10,
     });
   }
 
-  if (showVerticalBalance) {
+  if (stepNumber >= 2) {
     drawConfiguredArrow(ctx, carCenter, { x: 0, y: verticalLength }, "#b23a48", "mg", 14);
   }
 
-  if (showHorizontalBalance) {
+  if (stepNumber >= 3) {
     drawConfiguredArrow(ctx, carCenter, { x: horizontalLength, y: 0 }, "#2a4d9b", "Fc", 14);
   }
 
-  drawStepAnnotation(ctx, stepNumber, width, height, {
-    carCenter,
-    vectorTip,
-    verticalLength,
-    horizontalLength,
-  });
+  if (stepNumber >= 4) {
+    drawEquationOverlay(ctx, width * 0.09, height * 0.1, width * 0.58, stepNumber);
+  }
 }
 
 function drawRoadBase(ctx, centerX, centerY, roadLength, carWidth, carHeight, angle, rightEnd) {
@@ -161,72 +161,24 @@ function drawRoadBase(ctx, centerX, centerY, roadLength, carWidth, carHeight, an
   ctx.stroke();
   ctx.restore();
 
-  drawSharedLabel(ctx, "20° bank", 20, 24, {
+  drawSharedLabel(ctx, "45° bank", 20, 24, {
     color: "#225e51",
     size: 15,
     weight: 700,
   });
 }
 
-function drawStepAnnotation(ctx, stepNumber, width, height, geometry) {
-  const annotations = {
-    1: ["Resolve FN into a right triangle", "Components follow vertical and horizontal axes"],
-    2: ["Vertical balance", "FNy = mg"],
-    3: ["Horizontal balance", "FNx = Fc = mv²/r"],
-    4: ["Use the two balances together", "Divide horizontal by vertical"],
-    5: ["Form a ratio", "left side / right side"],
-    6: ["Cancel common factors", "FN and m disappear, tan(theta) remains"],
-    7: ["Rearrange for v²", "multiply both sides by r g"],
-    8: ["Final result", "take the square root"],
-  };
-
-  drawAnnotationBox(ctx, width * 0.56, 16, width * 0.38, height - 32, annotations[stepNumber]);
-
-  if (stepNumber >= 4) {
-    drawEquationOverlay(ctx, width * 0.58, height * 0.47, width * 0.34, stepNumber);
-  }
-
-  if (stepNumber >= 4) {
-    ctx.save();
-    ctx.strokeStyle = "rgba(34, 94, 81, 0.2)";
-    ctx.setLineDash([6, 6]);
-    ctx.beginPath();
-    ctx.moveTo(geometry.vectorTip.x + 6, geometry.vectorTip.y + 8);
-    ctx.lineTo(width * 0.56, height * 0.34);
-    ctx.stroke();
-    ctx.restore();
-  }
-}
-
-function drawAnnotationBox(ctx, x, y, width, height, lines) {
-  roundRect(ctx, x, y, width, height, 18);
-  ctx.fillStyle = "rgba(255, 253, 247, 0.96)";
-  ctx.strokeStyle = "rgba(34, 94, 81, 0.16)";
-  ctx.lineWidth = 2;
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = "#102a2a";
-  ctx.font = "700 15px 'Source Sans 3', sans-serif";
-  ctx.textBaseline = "top";
-  ctx.fillText(lines[0], x + 14, y + 14);
-
-  ctx.fillStyle = "#4f6b63";
-  ctx.font = "600 14px 'Source Sans 3', sans-serif";
-  wrapText(ctx, lines[1], x + 14, y + 42, width - 28, 18);
-}
-
 function drawEquationOverlay(ctx, x, y, width, stepNumber) {
   const rows = {
-    4: ["FNx = mv²/r", "FNy = mg"],
-    5: ["FNx / FNy", "= (mv²/r) / mg"],
-    6: ["tan(theta)", "= v² / (r g)"],
-    7: ["v²", "= r g tan(theta)"],
-    8: ["v", "= sqrt(r g tan(theta))"],
+    4: ["FNy = FN cos θ", "FNx = FN sin θ"],
+    5: ["FNx / FNy", "= FN sin θ / FN cos θ"],
+    6: ["tan θ", "= v² / (rg)"],
+    7: ["v²", "= rg tan θ"],
+    8: ["v", "= √(rg tan θ)"],
   };
 
   const [left, right] = rows[stepNumber];
-  roundRect(ctx, x, y, width, 52, 16);
+  roundRect(ctx, x, y, width, 56, 16);
   ctx.fillStyle = "rgba(241, 247, 244, 0.98)";
   ctx.strokeStyle = "rgba(34, 94, 81, 0.14)";
   ctx.lineWidth = 1.5;
@@ -234,10 +186,10 @@ function drawEquationOverlay(ctx, x, y, width, stepNumber) {
   ctx.stroke();
 
   ctx.fillStyle = "#102a2a";
-  ctx.font = "700 16px 'Space Grotesk', sans-serif";
+  ctx.font = "700 15px 'Space Grotesk', sans-serif";
   ctx.textBaseline = "middle";
-  ctx.fillText(left, x + 14, y + 19);
-  ctx.fillText(right, x + 14, y + 35);
+  ctx.fillText(left, x + 14, y + 20);
+  ctx.fillText(right, x + 14, y + 38);
 }
 
 function drawConfiguredArrow(ctx, origin, vector, color, label, labelOffset) {
@@ -278,28 +230,6 @@ function roundRect(ctx, x, y, width, height, radius) {
   ctx.arcTo(x, y + height, x, y, radius);
   ctx.arcTo(x, y, x + width, y, radius);
   ctx.closePath();
-}
-
-function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
-  const words = text.split(" ");
-  let line = "";
-  let cursorY = y;
-
-  words.forEach((word) => {
-    const testLine = line ? `${line} ${word}` : word;
-    if (ctx.measureText(testLine).width > maxWidth && line) {
-      ctx.fillText(line, x, cursorY);
-      line = word;
-      cursorY += lineHeight;
-      return;
-    }
-
-    line = testLine;
-  });
-
-  if (line) {
-    ctx.fillText(line, x, cursorY);
-  }
 }
 
 render();
