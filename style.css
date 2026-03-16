@@ -432,8 +432,13 @@ a {
 
 .formula-row {
   display: grid;
-  grid-template-columns: 3.5rem 1fr;
+  grid-template-columns: 3.5rem minmax(0, 1fr) auto;
   align-items: center;
+  gap: 0.6rem;
+}
+
+.formula-unit {
+  white-space: nowrap;
 }
 
 .metrics-grid {

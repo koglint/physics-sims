@@ -41,7 +41,11 @@ export function createFormulaPanel(state, onApply) {
       input.value = field.value;
       input.dataset.key = field.key;
 
-      wrapper.append(label, input);
+      const unit = document.createElement("span");
+      unit.className = "small-copy formula-unit";
+      unit.textContent = field.unit;
+
+      wrapper.append(label, input, unit);
       inputsContainer.append(wrapper);
     });
 
@@ -94,9 +98,9 @@ function calculateFormulaResult(state) {
       g: state.g,
     });
     return {
-      symbolic: `v = √(r g tan θ)`,
-      substitution: `v = √(${formatSigFigs(state.radius, figs)} m × ${formatSigFigs(state.g, figs)} m.s⁻² × tan ${formatSigFigs(state.theta, figs)}°)`,
-      html: `v = <strong>${formatSigFigs(velocity, figs)}</strong> m.s⁻¹ tangent to the curve`,
+      symbolic: "v = &radic;(r g tan &theta;)",
+      substitution: `v = &radic;(${formatSigFigs(state.radius, figs)} m &times; ${formatSigFigs(state.g, figs)} m.s<sup>-2</sup> &times; tan ${formatSigFigs(state.theta, figs)}&deg;)`,
+      html: `v = <strong>${formatSigFigs(velocity, figs)}</strong> m.s<sup>-1</sup> tangent to the curve`,
       patch: { velocity },
     };
   }
@@ -108,9 +112,9 @@ function calculateFormulaResult(state) {
       g: state.g,
     });
     return {
-      symbolic: `θ = tan⁻¹(v² / (r g))`,
-      substitution: `θ = tan⁻¹(${formatSigFigs(state.velocity, figs)}² / (${formatSigFigs(state.radius, figs)} m × ${formatSigFigs(state.g, figs)} m.s⁻² downward))`,
-      html: `θ = <strong>${formatSigFigs(theta, figs)}</strong> ° above the horizontal`,
+      symbolic: "&theta; = tan<sup>-1</sup>(v<sup>2</sup> / (r g))",
+      substitution: `&theta; = tan<sup>-1</sup>(${formatSigFigs(state.velocity, figs)}<sup>2</sup> / (${formatSigFigs(state.radius, figs)} m &times; ${formatSigFigs(state.g, figs)} m.s<sup>-2</sup> downward))`,
+      html: `&theta; = <strong>${formatSigFigs(theta, figs)}</strong> &deg; above the horizontal`,
       patch: { theta },
     };
   }
@@ -121,8 +125,8 @@ function calculateFormulaResult(state) {
     g: state.g,
   });
   return {
-    symbolic: `r = v² / (g tan θ)`,
-    substitution: `r = ${formatSigFigs(state.velocity, figs)}² / (${formatSigFigs(state.g, figs)} m.s⁻² downward × tan ${formatSigFigs(state.theta, figs)}°)`,
+    symbolic: "r = v<sup>2</sup> / (g tan &theta;)",
+    substitution: `r = ${formatSigFigs(state.velocity, figs)}<sup>2</sup> / (${formatSigFigs(state.g, figs)} m.s<sup>-2</sup> downward &times; tan ${formatSigFigs(state.theta, figs)}&deg;)`,
     html: `r = <strong>${formatSigFigs(radius, figs)}</strong> m`,
     patch: { radius },
   };
@@ -131,24 +135,24 @@ function calculateFormulaResult(state) {
 function getFieldsForSolve(state) {
   if (state.solveFor === "velocity") {
     return [
-      { key: "radius", label: `r = <span class="small-copy">m</span>`, step: "0.1", value: state.radius },
-      { key: "theta", label: `θ = <span class="small-copy">°</span>`, step: "0.1", value: state.theta },
-      { key: "g", label: `g = <span class="small-copy">m.s⁻² downward</span>`, step: "0.01", value: state.g },
+      { key: "radius", label: "r =", unit: "m", step: "0.1", value: state.radius },
+      { key: "theta", label: "&theta; =", unit: "deg", step: "0.1", value: state.theta },
+      { key: "g", label: "g =", unit: "m.s^-2 downward", step: "0.01", value: state.g },
     ];
   }
 
   if (state.solveFor === "bank angle") {
     return [
-      { key: "velocity", label: `v = <span class="small-copy">m.s⁻¹ tangent</span>`, step: "0.1", value: state.velocity },
-      { key: "radius", label: `r = <span class="small-copy">m</span>`, step: "0.1", value: state.radius },
-      { key: "g", label: `g = <span class="small-copy">m.s⁻² downward</span>`, step: "0.01", value: state.g },
+      { key: "velocity", label: "v =", unit: "m.s^-1 tangent", step: "0.1", value: state.velocity },
+      { key: "radius", label: "r =", unit: "m", step: "0.1", value: state.radius },
+      { key: "g", label: "g =", unit: "m.s^-2 downward", step: "0.01", value: state.g },
     ];
   }
 
   return [
-    { key: "velocity", label: `v = <span class="small-copy">m.s⁻¹ tangent</span>`, step: "0.1", value: state.velocity },
-    { key: "theta", label: `θ = <span class="small-copy">°</span>`, step: "0.1", value: state.theta },
-    { key: "g", label: `g = <span class="small-copy">m.s⁻² downward</span>`, step: "0.01", value: state.g },
+    { key: "velocity", label: "v =", unit: "m.s^-1 tangent", step: "0.1", value: state.velocity },
+    { key: "theta", label: "&theta; =", unit: "deg", step: "0.1", value: state.theta },
+    { key: "g", label: "g =", unit: "m.s^-2 downward", step: "0.01", value: state.g },
   ];
 }
 
