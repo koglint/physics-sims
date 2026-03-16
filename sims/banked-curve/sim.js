@@ -36,7 +36,7 @@ initSimulation();
 
 export function initSimulation() {
   loadStateFromUrl();
-  syncRoadViewVelocity();
+  syncIdealVelocityForDiagram();
   buildSliderControls();
   buildVectorControls();
   populateDiagramModes();
@@ -113,7 +113,7 @@ export function updateUI() {
 
 export function resetSimulation() {
   Object.assign(state, PHYSICS_DEFAULTS, { vectors: structuredClone(VECTOR_DEFAULTS) });
-  syncRoadViewVelocity();
+  syncIdealVelocityForDiagram();
   updateUrl();
   markDirty("all");
 }
@@ -187,7 +187,7 @@ function bindInputs() {
 
       state[key] = Number.parseFloat(event.target.value);
       if (key === "theta" || key === "radius" || key === "g") {
-        syncRoadViewVelocity();
+        syncIdealVelocityForDiagram();
       }
       markDirty("all");
     });
@@ -207,7 +207,7 @@ function bindInputs() {
 
     state.diagramMode = button.dataset.mode;
     document.querySelector("#diagram-mode").value = state.diagramMode;
-    syncRoadViewVelocity();
+    syncIdealVelocityForDiagram();
     markDirty("all");
   });
 
@@ -248,12 +248,12 @@ function bindInputs() {
 
 function applyStatePatch(patch) {
   Object.assign(state, patch);
-  syncRoadViewVelocity();
+  syncIdealVelocityForDiagram();
   markDirty("all");
 }
 
-function syncRoadViewVelocity() {
-  if (state.diagramMode !== "road") {
+function syncIdealVelocityForDiagram() {
+  if (state.diagramMode !== "road" && state.diagramMode !== "fbd") {
     return;
   }
 
