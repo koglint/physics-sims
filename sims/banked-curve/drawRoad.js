@@ -3,7 +3,7 @@ import { drawArrow } from "../../shared/vectors.js";
 
 export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
-  const centerX = width * 0.52;
+  const centerX = width * 0.34;
   const centerY = height * 0.66;
   const roadLength = Math.min(width, height) * 0.58;
   const carWidth = roadLength * 0.16;
