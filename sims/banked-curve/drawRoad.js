@@ -10,6 +10,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const carHeight = roadLength * 0.07;
   const angle = physics.thetaRadians;
   const carOffset = carHeight / 2 + 10;
+  const angleLabel = `${state.theta.toFixed(0)} deg`;
   const carCenter = {
     x: centerX + Math.sin(angle) * carOffset,
     y: centerY - Math.cos(angle) * carOffset,
@@ -52,7 +53,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
     weight: 700,
   });
 
-  drawAngleArc(ctx, rightEnd.x - roadLength * 0.01, rightEnd.y - 2, Math.max(32, roadLength * 0.15), -Math.PI, -Math.PI + angle, "θ", {
+  drawAngleArc(ctx, rightEnd.x - roadLength * 0.01, rightEnd.y - 2, Math.max(32, roadLength * 0.15), -Math.PI, -Math.PI + angle, angleLabel, {
     labelOffset: 12,
   });
 
@@ -90,7 +91,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   if (vectorMeta.normalComponents?.visible) {
     drawComponentVector(ctx, carCenter, { x: 0, y: -normalYLength }, vectorMeta.normalComponents.color, "FNy");
     drawComponentVector(ctx, normalYTip, { x: normalXLength, y: 0 }, vectorMeta.normalComponents.color, "FNx");
-    drawAngleArc(ctx, carCenter.x, carCenter.y, Math.max(24, normalLength * 0.28), -Math.PI / 2, -Math.PI / 2 + angle, "θ", {
+    drawAngleArc(ctx, carCenter.x, carCenter.y, Math.max(24, normalLength * 0.28), -Math.PI / 2, -Math.PI / 2 + angle, angleLabel, {
       labelOffset: 10,
     });
   }

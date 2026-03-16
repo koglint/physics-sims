@@ -5,6 +5,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
   const origin = { x: width * 0.44, y: height * 0.63 };
   const angle = physics.thetaRadians;
+  const angleLabel = `${state.theta.toFixed(0)} deg`;
   const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
   const mainScale = createForceScaler(Math.min(width, height) * 0.54, 42, 18000, state.scaleVectorsByMagnitude);
   const componentScale = createForceScaler(Math.min(width, height) * 0.54, 0, 18000, state.scaleVectorsByMagnitude);
@@ -50,7 +51,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
 
   drawConfiguredVector(ctx, origin, { x: centripetalLength, y: 0 }, "centripetal", vectorMeta, "Fc");
 
-  drawAngleArc(ctx, origin.x, origin.y, Math.max(28, normalLength * 0.28), -Math.PI / 2, -Math.PI / 2 + angle, "theta", {
+  drawAngleArc(ctx, origin.x, origin.y, Math.max(28, normalLength * 0.28), -Math.PI / 2, -Math.PI / 2 + angle, angleLabel, {
     labelOffset: 12,
   });
 
