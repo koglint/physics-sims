@@ -229,6 +229,14 @@ function bindInputs() {
     markDirty("render");
   });
 
+  document.querySelector("#vectors-all-on").addEventListener("click", () => {
+    setAllVectorVisibility(true);
+  });
+
+  document.querySelector("#vectors-all-off").addEventListener("click", () => {
+    setAllVectorVisibility(false);
+  });
+
   document.querySelector("#reset-button").addEventListener("click", resetSimulation);
 
   document.querySelector("#copy-link-button").addEventListener("click", async () => {
@@ -251,6 +259,19 @@ function applyStatePatch(patch) {
   Object.assign(state, patch);
   syncIdealVelocityForDiagram();
   markDirty("all");
+}
+
+function setAllVectorVisibility(visible) {
+  Object.keys(state.vectors).forEach((key) => {
+    if (key === "friction" || key === "frictionComponents") {
+      return;
+    }
+
+    state.vectors[key].visible = visible;
+  });
+
+  markDirty("ui");
+  markDirty("render");
 }
 
 function syncIdealVelocityForDiagram() {

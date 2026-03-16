@@ -385,6 +385,29 @@ a {
   padding-top: 0.75rem;
 }
 
+.vector-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.vector-action-button {
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(16, 42, 42, 0.14);
+  border-radius: 0.9rem;
+  background: rgba(255, 253, 247, 0.92);
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.vector-action-button:hover,
+.vector-action-button:focus-visible {
+  background: #fff;
+  border-color: rgba(34, 94, 81, 0.35);
+}
+
 .canvas-wrap {
   position: relative;
   height: clamp(18rem, 48vh, 31rem);
