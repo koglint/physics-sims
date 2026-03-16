@@ -85,7 +85,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   drawConfiguredVector(ctx, carCenter, normalVector, "normal", vectorMeta, "FN");
 
   if (state.frictionEnabled) {
-    drawConfiguredVector(ctx, carCenter, frictionVector, "friction", vectorMeta, "Ff");
+    drawConfiguredVector(ctx, carCenter, frictionVector, "friction", vectorMeta, "Ff", -16);
   }
 
   if (vectorMeta.normalComponents?.visible) {
@@ -139,7 +139,7 @@ function resolveNormalDisplay({ angle, normalLength, weightLength, frictionEnabl
   };
 }
 
-function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
+function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label, labelOffset = 14) {
   const config = vectorMeta[key];
   if (!config?.visible) {
     return;
@@ -153,6 +153,7 @@ function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
     color: config.color,
     label,
     labelPosition: "middle",
+    labelOffset,
   });
 }
 

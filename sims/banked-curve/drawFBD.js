@@ -46,7 +46,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   drawConfiguredVector(ctx, origin, normalVector, "normal", vectorMeta, "FN");
 
   if (state.frictionEnabled) {
-    drawConfiguredVector(ctx, origin, frictionVector, "friction", vectorMeta, "Ff");
+    drawConfiguredVector(ctx, origin, frictionVector, "friction", vectorMeta, "Ff", -16);
   }
 
   drawConfiguredVector(ctx, origin, { x: centripetalLength, y: 0 }, "centripetal", vectorMeta, "Fc");
@@ -101,7 +101,7 @@ function resolveNormalDisplay({ angle, normalLength, weightLength, frictionEnabl
   };
 }
 
-function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
+function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label, labelOffset = 14) {
   const config = vectorMeta[key];
   if (!config?.visible) {
     return;
@@ -115,6 +115,7 @@ function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
     color: config.color,
     label,
     labelPosition: "middle",
+    labelOffset,
   });
 }
 
