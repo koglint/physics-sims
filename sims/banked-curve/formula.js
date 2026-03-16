@@ -95,7 +95,7 @@ function calculateFormulaResult(state) {
     });
     return {
       symbolic: `v = √(r g tan θ)`,
-      substitution: `v = √(${formatSigFigs(state.radius, figs)} m × ${formatSigFigs(state.g, figs)} m.s⁻² downward × tan ${formatSigFigs(state.theta, figs)}°)`,
+      substitution: `v = √(${formatSigFigs(state.radius, figs)} m × ${formatSigFigs(state.g, figs)} m.s⁻² × tan ${formatSigFigs(state.theta, figs)}°)`,
       html: `v = <strong>${formatSigFigs(velocity, figs)}</strong> m.s⁻¹ tangent to the curve`,
       patch: { velocity },
     };
