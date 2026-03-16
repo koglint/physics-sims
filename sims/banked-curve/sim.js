@@ -253,10 +253,6 @@ function applyStatePatch(patch) {
 }
 
 function syncIdealVelocityForDiagram() {
-  if (state.diagramMode !== "road" && state.diagramMode !== "fbd") {
-    return;
-  }
-
   const idealVelocity = solveIdealEquation("velocity", {
     theta: state.theta,
     radius: state.radius,

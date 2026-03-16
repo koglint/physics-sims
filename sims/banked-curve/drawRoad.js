@@ -10,7 +10,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const carHeight = roadLength * 0.07;
   const angle = physics.thetaRadians;
   const carOffset = carHeight / 2 + 10;
-  const angleLabel = `${state.theta.toFixed(0)} deg`;
+  const angleLabel = `${state.theta.toFixed(0)}°`;
   const carCenter = {
     x: centerX + Math.sin(angle) * carOffset,
     y: centerY - Math.cos(angle) * carOffset,
@@ -47,7 +47,7 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   ctx.stroke();
   ctx.restore();
 
-  drawLabel(ctx, `${state.theta.toFixed(0)} deg bank`, width * 0.13, height * 0.12, {
+  drawLabel(ctx, `${state.theta.toFixed(0)}° bank`, width * 0.13, height * 0.12, {
     color: "#225e51",
     size: 18,
     weight: 700,

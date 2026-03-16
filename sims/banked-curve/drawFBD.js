@@ -5,7 +5,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
   const origin = { x: width * 0.44, y: height * 0.63 };
   const angle = physics.thetaRadians;
-  const angleLabel = `${state.theta.toFixed(0)} deg`;
+  const angleLabel = `${state.theta.toFixed(0)}°`;
   const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
   const mainScale = createForceScaler(Math.min(width, height) * 0.54, 42, 18000, state.scaleVectorsByMagnitude);
   const componentScale = createForceScaler(Math.min(width, height) * 0.54, 0, 18000, state.scaleVectorsByMagnitude);
