@@ -1,4 +1,4 @@
-import { DIAGRAM_MODES, PHYSICS_DEFAULTS, PRESETS, RANGE_CONFIG, VECTOR_DEFAULTS } from "../../shared/constants.js";
+import { DIAGRAM_MODES, PHYSICS_DEFAULTS, RANGE_CONFIG, VECTOR_DEFAULTS } from "../../shared/constants.js";
 import { clearCanvas, fitCanvasToContainer } from "../../shared/canvasUtils.js";
 import { applyViewportMode, watchCanvasResize } from "../../shared/responsive.js";
 import { copyText, formatNumber, updateRangeValue } from "../../shared/ui.js";
@@ -89,7 +89,6 @@ export function updateUI() {
   });
 
   document.querySelector("#friction-enabled").checked = state.frictionEnabled;
-  document.querySelector("#vector-scale-toggle").checked = state.scaleVectorsByMagnitude;
   document.querySelector("#diagram-mode").value = state.diagramMode;
   document.querySelector("#friction-formulas").classList.toggle("is-hidden", !state.frictionEnabled);
   document.querySelector("#status-pill").textContent = runtime.physics?.skidState === "holds" ? "Balanced" : runtime.physics?.skidState ?? "Ready";
@@ -200,11 +199,6 @@ function bindInputs() {
     markDirty("all");
   });
 
-  document.querySelector("#vector-scale-toggle").addEventListener("change", (event) => {
-    state.scaleVectorsByMagnitude = event.target.checked;
-    markDirty("all");
-  });
-
   document.querySelector("#diagram-mode-buttons").addEventListener("click", (event) => {
     const button = event.target.closest("[data-mode]");
     if (!button) {
@@ -232,12 +226,6 @@ function bindInputs() {
       state.vectors[key].color = target.value;
     }
     markDirty("render");
-  });
-
-  document.querySelectorAll("[data-preset]").forEach((button) => {
-    button.addEventListener("click", () => {
-      applyStatePatch(PRESETS[button.dataset.preset](state));
-    });
   });
 
   document.querySelector("#reset-button").addEventListener("click", resetSimulation);
