@@ -89,8 +89,8 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   }
 
   if (vectorMeta.normalComponents?.visible) {
-    drawComponentVector(ctx, carCenter, { x: 0, y: -normalYLength }, vectorMeta.normalComponents.color, "FNy");
-    drawComponentVector(ctx, normalYTip, { x: normalXLength, y: 0 }, vectorMeta.normalComponents.color, "FNx");
+    drawComponentVector(ctx, carCenter, { x: 0, y: -normalYLength }, vectorMeta.normalComponents.color, "FNy", -14);
+    drawComponentVector(ctx, normalYTip, { x: normalXLength, y: 0 }, vectorMeta.normalComponents.color, "FNx", -14);
     drawAngleArc(ctx, carCenter.x, carCenter.y, Math.max(24, normalLength * 0.28), -Math.PI / 2, -Math.PI / 2 + angle, angleLabel, {
       labelOffset: 10,
     });
@@ -156,7 +156,7 @@ function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label) {
   });
 }
 
-function drawComponentVector(ctx, origin, vector, color, label) {
+function drawComponentVector(ctx, origin, vector, color, label, labelOffset = 14) {
   drawArrow(ctx, {
     x: origin.x,
     y: origin.y,
@@ -168,5 +168,6 @@ function drawComponentVector(ctx, origin, vector, color, label) {
     width: 2,
     alpha: 0.9,
     labelPosition: "middle",
+    labelOffset,
   });
 }
