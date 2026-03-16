@@ -58,20 +58,22 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
 
   const mainScale = createForceScaler(Math.min(width, height) * 0.54, 42, 18000, state.scaleVectorsByMagnitude);
   const componentScale = createForceScaler(Math.min(width, height) * 0.54, 0, 18000, state.scaleVectorsByMagnitude);
-  const normalLength = mainScale(physics.normalForce);
   const weightLength = mainScale(physics.weight);
+  const normalLength = mainScale(physics.normalForce);
   const frictionLength = mainScale(Math.abs(physics.frictionActualSigned));
   const centripetalLength = mainScale(physics.centripetalForce);
+  const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
+  const normalDisplay = resolveNormalDisplay({
+    angle,
+    normalLength,
+    weightLength,
+    frictionEnabled: state.frictionEnabled,
+  });
+  const normalVector = normalDisplay.vector;
+  const normalXLength = normalDisplay.xLength;
+  const normalYLength = normalDisplay.yLength;
   const frictionXLength = componentScale(Math.abs(physics.frictionActualSigned * Math.cos(angle)));
   const frictionYLength = componentScale(Math.abs(physics.frictionActualSigned * Math.sin(angle)));
-  const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
-
-  const normalVector = {
-    x: Math.sin(angle) * normalLength,
-    y: -Math.cos(angle) * normalLength,
-  };
-  const normalXLength = normalVector.x;
-  const normalYLength = -normalVector.y;
   const frictionVector = {
     x: Math.cos(angle) * frictionLength * frictionDirection,
     y: Math.sin(angle) * frictionLength * frictionDirection,
@@ -109,6 +111,30 @@ function createForceScaler(maxLength, minLength, referenceForce, useMagnitudeSca
 
     const scaled = (Math.abs(force) / referenceForce) * maxLength;
     return Math.min(maxLength, Math.max(minLength, scaled));
+  };
+}
+
+function resolveNormalDisplay({ angle, normalLength, weightLength, frictionEnabled }) {
+  if (!frictionEnabled) {
+    const yLength = weightLength;
+    const xLength = Math.tan(angle) * yLength;
+    return {
+      xLength,
+      yLength,
+      vector: {
+        x: xLength,
+        y: -yLength,
+      },
+    };
+  }
+
+  return {
+    xLength: Math.sin(angle) * normalLength,
+    yLength: Math.cos(angle) * normalLength,
+    vector: {
+      x: Math.sin(angle) * normalLength,
+      y: -Math.cos(angle) * normalLength,
+    },
   };
 }
 
