@@ -62,8 +62,6 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const weightLength = mainScale(physics.weight);
   const frictionLength = mainScale(Math.abs(physics.frictionActualSigned));
   const centripetalLength = mainScale(physics.centripetalForce);
-  const normalXLength = componentScale(physics.normalForce * Math.sin(angle));
-  const normalYLength = componentScale(physics.normalForce * Math.cos(angle));
   const frictionXLength = componentScale(Math.abs(physics.frictionActualSigned * Math.cos(angle)));
   const frictionYLength = componentScale(Math.abs(physics.frictionActualSigned * Math.sin(angle)));
   const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
@@ -72,6 +70,8 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
     x: Math.sin(angle) * normalLength,
     y: -Math.cos(angle) * normalLength,
   };
+  const normalXLength = normalVector.x;
+  const normalYLength = -normalVector.y;
   const frictionVector = {
     x: Math.cos(angle) * frictionLength * frictionDirection,
     y: Math.sin(angle) * frictionLength * frictionDirection,
