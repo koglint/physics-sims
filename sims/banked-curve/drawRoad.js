@@ -58,7 +58,6 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   });
 
   const mainScale = createForceScaler(Math.min(width, height) * 0.54, 42, 18000, state.scaleVectorsByMagnitude);
-  const componentScale = createForceScaler(Math.min(width, height) * 0.54, 0, 18000, state.scaleVectorsByMagnitude);
   const weightLength = mainScale(physics.weight);
   const normalLength = mainScale(physics.normalForce);
   const frictionLength = mainScale(Math.abs(physics.frictionActualSigned));
@@ -72,15 +71,15 @@ export function drawRoadView(ctx, bounds, state, physics, vectorMeta) {
   const normalVector = normalDisplay.vector;
   const normalXLength = normalDisplay.xLength;
   const normalYLength = normalDisplay.yLength;
-  const frictionXLength = componentScale(Math.abs(physics.frictionX));
-  const frictionYLength = componentScale(Math.abs(physics.frictionY));
-  const centripetalLength = Math.max(0, normalXLength + frictionXLength * frictionDirection);
   const frictionVector = {
     x: Math.cos(angle) * frictionLength * frictionDirection,
     y: Math.sin(angle) * frictionLength * frictionDirection,
   };
+  const frictionXLength = Math.abs(frictionVector.x);
+  const frictionYLength = Math.abs(frictionVector.y);
+  const centripetalLength = Math.max(0, normalXLength + frictionVector.x);
   const normalYTip = { x: carCenter.x, y: carCenter.y - normalYLength };
-  const frictionYTip = { x: carCenter.x, y: carCenter.y + frictionYLength * frictionDirection };
+  const frictionYTip = { x: carCenter.x, y: carCenter.y + frictionVector.y };
 
   drawConfiguredVector(ctx, carCenter, { x: 0, y: weightLength }, "weight", vectorMeta, "mg");
   drawConfiguredVector(ctx, carCenter, normalVector, "normal", vectorMeta, "FN");
@@ -166,8 +165,9 @@ function drawComponentVector(ctx, origin, vector, color, label, labelOffset = 14
     color,
     label,
     dashed: true,
-    width: 2,
-    alpha: 0.9,
+    width: 3,
+    head: 11,
+    alpha: 1,
     labelPosition: "middle",
     labelOffset,
   });

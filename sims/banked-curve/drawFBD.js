@@ -8,7 +8,6 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const angleLabel = `${state.theta.toFixed(0)}°`;
   const frictionDirection = Math.sign(physics.frictionActualSigned || physics.frictionRequiredSigned || 0);
   const mainScale = createForceScaler(Math.min(width, height) * 0.54, 42, 18000, state.scaleVectorsByMagnitude);
-  const componentScale = createForceScaler(Math.min(width, height) * 0.54, 0, 18000, state.scaleVectorsByMagnitude);
   const weightLength = mainScale(physics.weight);
   const normalLength = mainScale(physics.normalForce);
   const frictionLength = mainScale(Math.abs(physics.frictionActualSigned));
@@ -21,14 +20,14 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const normalVector = normalDisplay.vector;
   const normalXLength = normalDisplay.xLength;
   const normalYLength = normalDisplay.yLength;
-  const frictionXLength = componentScale(Math.abs(physics.frictionX));
-  const frictionYLength = componentScale(Math.abs(physics.frictionY));
-  const centripetalLength = Math.max(0, normalXLength + frictionXLength * frictionDirection);
   const frictionVector = {
     x: Math.cos(angle) * frictionLength * frictionDirection,
     y: Math.sin(angle) * frictionLength * frictionDirection,
   };
-  const frictionYTip = { x: origin.x, y: origin.y + frictionYLength * frictionDirection };
+  const frictionXLength = Math.abs(frictionVector.x);
+  const frictionYLength = Math.abs(frictionVector.y);
+  const centripetalLength = Math.max(0, normalXLength + frictionVector.x);
+  const frictionYTip = { x: origin.x, y: origin.y + frictionVector.y };
 
   ctx.save();
   ctx.fillStyle = "#102a2a";
@@ -128,8 +127,9 @@ function drawComponentVector(ctx, origin, vector, color, label, labelOffset = 14
     color,
     label,
     dashed: true,
-    width: 2,
-    alpha: 0.88,
+    width: 3,
+    head: 11,
+    alpha: 1,
     labelPosition: "middle",
     labelOffset,
   });
