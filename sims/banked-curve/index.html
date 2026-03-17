@@ -15,9 +15,6 @@
       <div>
         <p class="eyebrow">Advanced Mechanics Simulation</p>
         <h1>Banked Curve</h1>
-        <p class="sim-subtitle">
-          Explore the forces acting on a car on a banked track.
-        </p>
       </div>
       <div class="sim-header-actions">
         <a class="ghost-link" href="../../index.html">Back to library</a>
@@ -41,6 +38,14 @@
             <div id="diagram-mode-buttons" class="mode-button-row" role="group" aria-label="Diagram mode"></div>
             <input id="diagram-mode" type="hidden">
             <p class="hint" id="diagram-hint">Road view shows the car on the banked track.</p>
+          </div>
+
+          <div class="panel-section">
+            <h3>Derivation</h3>
+            <a class="derivation-launch" href="./derivation.html" target="_blank" rel="noopener">
+              <strong>Open step-by-step derivation</strong>
+              <span>Reveal the derivation of <span class="formula-symbol">v = &radic;(r g tan &theta;)</span> one line at a time.</span>
+            </a>
           </div>
         </div>
       </aside>
@@ -81,7 +86,7 @@
                   <select id="solve-for"></select>
                 </div>
                 <div>
-                  <label class="label-strong" for="sig-figs">Significant figures</label>
+                  <label class="label-strong" for="sig-figs">Sig figs</label>
                   <select id="sig-figs">
                     <option value="2">2</option>
                     <option value="3" selected>3</option>
@@ -106,14 +111,6 @@
           <div class="panel-section">
             <h3>Data Readout</h3>
             <div class="metrics-grid" id="metrics-grid"></div>
-          </div>
-
-          <div class="panel-section">
-            <h3>Derivations</h3>
-            <a class="derivation-launch" href="./derivation.html" target="_blank" rel="noopener">
-              <strong>Open step-by-step derivation</strong>
-              <span>Reveal the derivation of <span class="formula-symbol">v = &radic;(r g tan &theta;)</span> one line at a time.</span>
-            </a>
           </div>
         </div>
       </aside>

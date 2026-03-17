@@ -135,11 +135,11 @@ function buildSliderControls() {
 function buildVectorControls() {
   const container = document.querySelector("#vector-controls");
   const labels = {
-    weight: "Weight vector",
-    normal: "Normal force",
+    weight: "Weight",
+    normal: "Normal",
     centripetal: "Centripetal",
     velocity: "Velocity",
-    normalComponents: "Normal components",
+    normalComponents: "Components",
   };
 
   Object.entries(state.vectors).forEach(([key, config]) => {
