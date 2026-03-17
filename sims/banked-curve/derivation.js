@@ -107,13 +107,14 @@ function drawRoadScene(ctx, width, height, stepNumber) {
   const verticalLength = Math.min(width, height) * 0.28;
   const horizontalLength = Math.tan(angle) * verticalLength;
   const normalVector = { x: horizontalLength, y: -verticalLength };
+  const componentLabels = getComponentLabels(stepNumber);
 
   drawRoadBase(ctx, centerX, centerY, roadLength, carWidth, carHeight, angle, rightEnd);
 
   if (stepNumber >= 1) {
     drawConfiguredArrow(ctx, carCenter, normalVector, "#226f54", "FN", 16);
-    drawComponentArrow(ctx, carCenter, { x: 0, y: -verticalLength }, "#425466", "FNy", -14);
-    drawComponentArrow(ctx, { x: carCenter.x, y: carCenter.y - verticalLength }, { x: horizontalLength, y: 0 }, "#425466", "FNx", -14);
+    drawComponentArrow(ctx, carCenter, { x: 0, y: -verticalLength }, "#425466", componentLabels.vertical, componentLabels.verticalOffset, componentLabels.font);
+    drawComponentArrow(ctx, { x: carCenter.x, y: carCenter.y - verticalLength }, { x: horizontalLength, y: 0 }, "#425466", componentLabels.horizontal, componentLabels.horizontalOffset, componentLabels.font);
     drawSharedAngleArc(ctx, carCenter.x, carCenter.y, Math.max(24, verticalLength * 0.32), -Math.PI / 2, -Math.PI / 2 + angle, "θ", {
       color: "#225e51",
       labelOffset: 10,
@@ -177,7 +178,7 @@ function drawConfiguredArrow(ctx, origin, vector, color, label, labelOffset) {
   });
 }
 
-function drawComponentArrow(ctx, origin, vector, color, label, labelOffset) {
+function drawComponentArrow(ctx, origin, vector, color, label, labelOffset, labelFont) {
   drawSharedArrow(ctx, {
     x: origin.x,
     y: origin.y,
@@ -191,7 +192,38 @@ function drawComponentArrow(ctx, origin, vector, color, label, labelOffset) {
     alpha: 1,
     labelPosition: "middle",
     labelOffset,
+    labelFont,
   });
+}
+
+function getComponentLabels(stepNumber) {
+  if (stepNumber === 4) {
+    return {
+      vertical: "FNy = FN cos θ",
+      horizontal: "FNx = FN sin θ",
+      verticalOffset: -18,
+      horizontalOffset: -16,
+      font: "600 13px 'Source Sans 3', sans-serif",
+    };
+  }
+
+  if (stepNumber >= 5) {
+    return {
+      vertical: "FN cos θ",
+      horizontal: "FN sin θ",
+      verticalOffset: -16,
+      horizontalOffset: -14,
+      font: "600 14px 'Source Sans 3', sans-serif",
+    };
+  }
+
+  return {
+    vertical: "FNy",
+    horizontal: "FNx",
+    verticalOffset: -14,
+    horizontalOffset: -14,
+    font: "600 16px 'Source Sans 3', sans-serif",
+  };
 }
 
 function roundRect(ctx, x, y, width, height, radius) {

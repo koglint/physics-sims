@@ -32,6 +32,7 @@ export function drawArrow(ctx, options) {
     alpha = 1,
     labelPosition = "tip",
     labelOffset = 14,
+    labelFont = "600 16px 'Source Sans 3', sans-serif",
   } = options;
 
   ctx.save();
@@ -66,7 +67,7 @@ export function drawArrow(ctx, options) {
 
   if (label) {
     ctx.setLineDash([]);
-    ctx.font = "600 16px 'Source Sans 3', sans-serif";
+    ctx.font = labelFont;
     if (labelPosition === "middle") {
       const direction = normalize(dx, dy);
       const normalX = -direction.y;
