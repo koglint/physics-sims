@@ -90,9 +90,9 @@ function drawStepCard(ctx, width, height) {
 
 function drawRoadScene(ctx, width, height, stepNumber) {
   const angle = Math.PI / 4;
-  const centerX = width * 0.38;
-  const centerY = height * 0.67;
-  const roadLength = Math.min(width, height) * 0.72;
+  const centerX = width * 0.45;
+  const centerY = height * 0.7;
+  const roadLength = Math.min(width, height) * 0.82;
   const carWidth = roadLength * 0.16;
   const carHeight = roadLength * 0.07;
   const carOffset = carHeight / 2 + 10;
@@ -104,7 +104,7 @@ function drawRoadScene(ctx, width, height, stepNumber) {
     x: centerX + Math.cos(angle) * roadLength * 0.55,
     y: centerY + Math.sin(angle) * roadLength * 0.55,
   };
-  const verticalLength = Math.min(width, height) * 0.24;
+  const verticalLength = Math.min(width, height) * 0.28;
   const horizontalLength = Math.tan(angle) * verticalLength;
   const normalVector = { x: horizontalLength, y: -verticalLength };
 
@@ -126,10 +126,6 @@ function drawRoadScene(ctx, width, height, stepNumber) {
 
   if (stepNumber >= 3) {
     drawConfiguredArrow(ctx, carCenter, { x: horizontalLength, y: 0 }, "#2a4d9b", "Fc", 14);
-  }
-
-  if (stepNumber >= 4) {
-    drawEquationOverlay(ctx, width * 0.09, height * 0.1, width * 0.58, stepNumber);
   }
 }
 
@@ -166,30 +162,6 @@ function drawRoadBase(ctx, centerX, centerY, roadLength, carWidth, carHeight, an
     size: 15,
     weight: 700,
   });
-}
-
-function drawEquationOverlay(ctx, x, y, width, stepNumber) {
-  const rows = {
-    4: ["FNy = FN cos θ", "FNx = FN sin θ"],
-    5: ["FNx / FNy", "= FN sin θ / FN cos θ"],
-    6: ["tan θ", "= v² / (rg)"],
-    7: ["v²", "= rg tan θ"],
-    8: ["v", "= √(rg tan θ)"],
-  };
-
-  const [left, right] = rows[stepNumber];
-  roundRect(ctx, x, y, width, 56, 16);
-  ctx.fillStyle = "rgba(241, 247, 244, 0.98)";
-  ctx.strokeStyle = "rgba(34, 94, 81, 0.14)";
-  ctx.lineWidth = 1.5;
-  ctx.fill();
-  ctx.stroke();
-
-  ctx.fillStyle = "#102a2a";
-  ctx.font = "700 15px 'Space Grotesk', sans-serif";
-  ctx.textBaseline = "middle";
-  ctx.fillText(left, x + 14, y + 20);
-  ctx.fillText(right, x + 14, y + 38);
 }
 
 function drawConfiguredArrow(ctx, origin, vector, color, label, labelOffset) {

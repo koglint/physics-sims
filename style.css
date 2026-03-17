@@ -555,7 +555,7 @@ a {
 .derivation-layout {
   display: grid;
   gap: 1rem;
-  max-width: 70rem;
+  max-width: 88rem;
 }
 
 .derivation-lead {
@@ -571,10 +571,10 @@ a {
 
 .derivation-step {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) minmax(15rem, 0.95fr);
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.1rem;
+  grid-template-columns: minmax(16rem, 0.9fr) minmax(28rem, 1.5fr);
+  align-items: start;
+  gap: 1.35rem;
+  padding: 1.15rem 1.2rem;
   border: 1px solid rgba(34, 94, 81, 0.14);
   border-radius: 1rem;
   background: rgba(255, 253, 247, 0.95);
@@ -603,7 +603,8 @@ a {
 
 .derivation-step-copy {
   display: grid;
-  gap: 0.35rem;
+  align-content: start;
+  gap: 0.5rem;
 }
 
 .derivation-formula {
@@ -612,15 +613,18 @@ a {
   line-height: 1.25;
 }
 
+.derivation-detail {
+  color: var(--muted);
+  font-size: 1.02rem;
+  line-height: 1.5;
+}
+
 .derivation-visual {
-  display: grid;
-  grid-template-columns: minmax(16rem, 1fr) minmax(14rem, 18rem);
-  align-items: stretch;
-  gap: 0.9rem;
+  display: block;
 }
 
 .derivation-diagram-card {
-  padding: 0.25rem;
+  padding: 0.35rem;
   border-radius: 1.2rem;
   background: rgba(255, 251, 244, 0.92);
   border: 1px solid rgba(34, 94, 81, 0.12);
@@ -629,30 +633,9 @@ a {
 .derivation-canvas {
   width: 100%;
   height: auto;
-  aspect-ratio: 320 / 220;
+  aspect-ratio: 5 / 3;
   display: block;
   border-radius: 1.1rem;
-}
-
-.derivation-note {
-  padding: 1rem 1rem 1rem 1.05rem;
-  border-radius: 1rem;
-  border: 1px solid rgba(34, 94, 81, 0.14);
-  background: rgba(255, 255, 255, 0.98);
-}
-
-.derivation-note-title {
-  margin: 0 0 0.45rem;
-  font-family: var(--font-display);
-  font-size: 1rem;
-  line-height: 1.3;
-}
-
-.derivation-note-body {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.98rem;
-  line-height: 1.45;
 }
 
 .diagram-sky {
