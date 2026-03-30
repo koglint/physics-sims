@@ -25,7 +25,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   drawConfiguredVector(ctx, origin, { x: 0, y: lengths.weight }, "weight", vectorMeta, "mg");
   drawConfiguredVector(ctx, origin, { x: planeNormal.x * lengths.normal, y: planeNormal.y * lengths.normal }, "normal", vectorMeta, "F_N");
   drawConfiguredVector(ctx, origin, { x: -downslope.x * lengths.friction, y: -downslope.y * lengths.friction }, "friction", vectorMeta, "F_f", -16);
-  drawConfiguredVector(ctx, origin, { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel }, "parallelComponent", vectorMeta, "mg sin theta", -18);
+  drawConfiguredVector(ctx, origin, { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel }, "parallelComponent", vectorMeta, "mg sin θ", -18);
 
   if (vectorMeta.perpendicularComponent?.visible) {
     drawComponentVector(
@@ -33,12 +33,12 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
       origin,
       { x: planeNormal.x * lengths.perpendicular, y: planeNormal.y * lengths.perpendicular },
       vectorMeta.perpendicularComponent.color,
-      "mg cos theta",
+      "mg cos θ",
       18,
     );
   }
 
-  drawAngleArc(ctx, origin.x, origin.y, Math.max(28, lengths.normal * 0.34), -Math.PI / 2, -Math.PI / 2 + angle, `${state.theta.toFixed(0)} deg`, {
+  drawAngleArc(ctx, origin.x, origin.y, Math.max(28, lengths.normal * 0.34), -Math.PI / 2, -Math.PI / 2 + angle, `${state.theta.toFixed(0)}°`, {
     labelOffset: 12,
   });
 }

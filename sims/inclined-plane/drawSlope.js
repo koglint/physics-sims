@@ -26,23 +26,43 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
     weight: 700,
   });
 
-  drawConfiguredVector(ctx, boxCenter, { x: 0, y: lengths.weight }, "weight", vectorMeta, "mg");
-  drawConfiguredVector(ctx, boxCenter, { x: planeNormal.x * lengths.normal, y: planeNormal.y * lengths.normal }, "normal", vectorMeta, "F_N");
-  drawConfiguredVector(ctx, boxCenter, { x: -downslope.x * lengths.friction, y: -downslope.y * lengths.friction }, "friction", vectorMeta, "F_f", -16);
-  drawConfiguredVector(ctx, boxCenter, { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel }, "parallelComponent", vectorMeta, "mg sin theta", -18);
+  const weightVector = { x: 0, y: lengths.weight };
+  const normalVector = { x: planeNormal.x * lengths.normal, y: planeNormal.y * lengths.normal };
+  const frictionVector = { x: -downslope.x * lengths.friction, y: -downslope.y * lengths.friction };
+  const parallelVector = { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel };
+  const perpendicularVector = { x: planeNormal.x * lengths.perpendicular, y: planeNormal.y * lengths.perpendicular };
+
+  drawConfiguredVector(ctx, boxCenter, weightVector, "weight");
+  drawConfiguredVector(ctx, boxCenter, normalVector, "normal");
+  drawConfiguredVector(ctx, boxCenter, frictionVector, "friction");
+  drawConfiguredVector(ctx, boxCenter, parallelVector, "parallelComponent");
 
   if (vectorMeta.perpendicularComponent?.visible) {
-    drawComponentVector(
-      ctx,
-      boxCenter,
-      { x: planeNormal.x * lengths.perpendicular, y: planeNormal.y * lengths.perpendicular },
-      vectorMeta.perpendicularComponent.color,
-      "mg cos theta",
-      18,
-    );
+    drawComponentVector(ctx, boxCenter, perpendicularVector, vectorMeta.perpendicularComponent.color);
   }
 
-  drawAngleArc(ctx, baseX + 16, baseY - 2, Math.max(30, slopeLength * 0.12), -Math.PI / 2, -Math.PI / 2 + angle, `${state.theta.toFixed(0)} deg`, {
+  drawVectorLabel(ctx, boxCenter, weightVector, vectorMeta.weight, "mg", {
+    along: 0.58,
+    normalOffset: -18,
+  });
+  drawVectorLabel(ctx, boxCenter, normalVector, vectorMeta.normal, "F_N", {
+    along: 0.76,
+    normalOffset: -24,
+  });
+  drawVectorLabel(ctx, boxCenter, frictionVector, vectorMeta.friction, "F_f", {
+    along: 0.5,
+    normalOffset: 22,
+  });
+  drawVectorLabel(ctx, boxCenter, parallelVector, vectorMeta.parallelComponent, "mg sin θ", {
+    along: 0.8,
+    normalOffset: -24,
+  });
+  drawVectorLabel(ctx, boxCenter, perpendicularVector, vectorMeta.perpendicularComponent, "mg cos θ", {
+    along: 0.44,
+    normalOffset: 28,
+  });
+
+  drawAngleArc(ctx, baseX + 16, baseY - 2, Math.max(30, slopeLength * 0.12), -Math.PI / 2, -Math.PI / 2 + angle, `${state.theta.toFixed(0)}°`, {
     labelOffset: 12,
   });
 }
@@ -101,7 +121,7 @@ function getForceLengths(bounds, state, physics) {
   };
 }
 
-function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label, labelOffset = 14) {
+function drawConfiguredVector(ctx, origin, vector, key, vectorMeta) {
   const config = vectorMeta[key];
   if (!config?.visible) {
     return;
@@ -113,25 +133,40 @@ function drawConfiguredVector(ctx, origin, vector, key, vectorMeta, label, label
     dx: vector.x,
     dy: vector.y,
     color: config.color,
-    label,
-    labelPosition: "middle",
-    labelOffset,
   });
 }
 
-function drawComponentVector(ctx, origin, vector, color, label, labelOffset = 14) {
+function drawComponentVector(ctx, origin, vector, color) {
   drawArrow(ctx, {
     x: origin.x,
     y: origin.y,
     dx: vector.x,
     dy: vector.y,
     color,
-    label,
     dashed: true,
     width: 3,
     head: 11,
     alpha: 1,
-    labelPosition: "middle",
-    labelOffset,
+  });
+}
+
+function drawVectorLabel(ctx, origin, vector, config, text, options = {}) {
+  if (!config?.visible) {
+    return;
+  }
+
+  const { along = 0.65, normalOffset = 0 } = options;
+  const length = Math.hypot(vector.x, vector.y) || 1;
+  const directionX = vector.x / length;
+  const directionY = vector.y / length;
+  const normalX = -directionY;
+  const normalY = directionX;
+  const x = origin.x + vector.x * along + normalX * normalOffset;
+  const y = origin.y + vector.y * along + normalY * normalOffset;
+
+  drawLabel(ctx, text, x, y, {
+    color: config.color,
+    size: 16,
+    weight: 700,
   });
 }

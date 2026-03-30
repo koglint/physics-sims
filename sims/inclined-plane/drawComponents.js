@@ -21,7 +21,7 @@ export function drawComponentsView(ctx, bounds, state, physics, vectorMeta) {
 
   drawSlopeGuide(ctx, width, height, angle);
   drawConfiguredVector(ctx, origin, { x: 0, y: lengths.weight }, "weight", vectorMeta, "mg");
-  drawConfiguredVector(ctx, origin, { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel }, "parallelComponent", vectorMeta, "mg sin theta", -18);
+  drawConfiguredVector(ctx, origin, { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel }, "parallelComponent", vectorMeta, "mg sin θ", -18);
 
   if (vectorMeta.perpendicularComponent?.visible) {
     drawComponentVector(
@@ -29,12 +29,12 @@ export function drawComponentsView(ctx, bounds, state, physics, vectorMeta) {
       parallelTip,
       { x: planeNormal.x * lengths.perpendicular, y: planeNormal.y * lengths.perpendicular },
       vectorMeta.perpendicularComponent.color,
-      "mg cos theta",
+      "mg cos θ",
       18,
     );
   }
 
-  drawAngleArc(ctx, width * 0.17, height * 0.79, Math.max(30, Math.min(width, height) * 0.12), -Math.PI / 2, -Math.PI / 2 + angle, `${state.theta.toFixed(0)} deg`, {
+  drawAngleArc(ctx, width * 0.17, height * 0.79, Math.max(30, Math.min(width, height) * 0.12), -Math.PI / 2, -Math.PI / 2 + angle, `${state.theta.toFixed(0)}°`, {
     labelOffset: 12,
   });
 }
