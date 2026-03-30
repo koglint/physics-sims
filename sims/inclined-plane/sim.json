@@ -1,0 +1,7 @@
+{
+  "slug": "inclined-plane",
+  "title": "Inclined Plane",
+  "category": "Mechanics",
+  "description": "Investigate the forces on a box at rest on an inclined plane, including weight components and static friction.",
+  "entry": "./index.html"
+}

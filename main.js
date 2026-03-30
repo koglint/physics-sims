@@ -6,6 +6,13 @@ const simulations = [
     description:
       "Investigate normal force, friction direction, and circular motion on a banked road with multiple diagram modes.",
   },
+  {
+    title: "Inclined Plane",
+    href: "./sims/inclined-plane/",
+    tag: "Mechanics",
+    description:
+      "Explore the weight, normal reaction, friction, and resolved force components for a box resting on a slope.",
+  },
 ];
 
 const grid = document.querySelector("#simulation-grid");
