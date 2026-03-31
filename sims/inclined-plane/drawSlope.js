@@ -20,7 +20,7 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
   };
   const lengths = getForceLengths(bounds, state, physics);
   const planeNormal = { x: -Math.sin(angle), y: -Math.cos(angle) };
-  const downslope = { x: Math.cos(angle), y: Math.sin(angle) };
+  const downslope = { x: -Math.cos(angle), y: Math.sin(angle) };
   const weightVector = { x: 0, y: lengths.weight };
   const normalVector = { x: planeNormal.x * lengths.normal, y: planeNormal.y * lengths.normal };
   const frictionVector = { x: -downslope.x * lengths.friction, y: -downslope.y * lengths.friction };
@@ -70,11 +70,11 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
 
   drawAngleArc(
     ctx,
-    baseX + 16,
+    baseX + 10,
     baseY - 2,
     Math.max(30, slopeLength * 0.12),
-    -Math.PI / 2,
-    -Math.PI / 2 + angle,
+    -angle,
+    0,
     `${state.theta.toFixed(0)}${DEGREE}`,
     { labelOffset: 12 },
   );
@@ -126,12 +126,14 @@ function getForceLengths(bounds, state, physics) {
     return Math.min(maxLength, Math.max(minLength, scaled));
   };
 
+  const weight = scale(physics.weight);
+
   return {
-    weight: scale(physics.weight),
+    weight,
     normal: scale(physics.normalForce),
     friction: scale(physics.frictionForce),
-    parallel: scale(physics.parallelComponent),
-    perpendicular: scale(physics.perpendicularComponent),
+    parallel: weight * Math.sin(physics.thetaRadians),
+    perpendicular: weight * Math.cos(physics.thetaRadians),
   };
 }
 

@@ -10,7 +10,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const angle = physics.thetaRadians;
   const lengths = getForceLengths(bounds, state, physics);
   const planeNormal = { x: -Math.sin(angle), y: -Math.cos(angle) };
-  const downslope = { x: Math.cos(angle), y: Math.sin(angle) };
+  const downslope = { x: -Math.cos(angle), y: Math.sin(angle) };
   const perpendicularVector = {
     x: -planeNormal.x * lengths.perpendicular,
     y: -planeNormal.y * lengths.perpendicular,
@@ -75,12 +75,14 @@ function getForceLengths(bounds, state, physics) {
     return Math.min(maxLength, Math.max(minLength, scaled));
   };
 
+  const weight = scale(physics.weight);
+
   return {
-    weight: scale(physics.weight),
+    weight,
     normal: scale(physics.normalForce),
     friction: scale(physics.frictionForce),
-    parallel: scale(physics.parallelComponent),
-    perpendicular: scale(physics.perpendicularComponent),
+    parallel: weight * Math.sin(physics.thetaRadians),
+    perpendicular: weight * Math.cos(physics.thetaRadians),
   };
 }
 
