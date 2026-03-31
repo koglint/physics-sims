@@ -11,7 +11,7 @@ export const INCLINED_DEFAULTS = {
 
 export const RANGE_CONFIG = {
   theta: { min: 0, max: 60, step: 1, unit: "deg" },
-  mass: { min: 1, max: 50, step: 0.5, unit: "kg" },
+  mass: { min: 1, max: 20, step: 0.5, unit: "kg" },
   mu: { min: 0, max: 1.2, step: 0.01, unit: "" },
   g: { min: 1.6, max: 15, step: 0.01, unit: "m.s^-2" },
 };

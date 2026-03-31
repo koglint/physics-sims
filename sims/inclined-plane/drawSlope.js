@@ -129,7 +129,7 @@ function drawSlopeBase(ctx, baseX, baseY, topX, topY, boxCenter, boxWidth, boxHe
 
 function getForceLengths(bounds, state, physics) {
   const maxLength = Math.min(bounds.width, bounds.height) * 0.42;
-  const minLength = 54;
+  const minLength = 68;
 
   const scale = (value) => {
     if (!state.scaleVectorsByMagnitude) {

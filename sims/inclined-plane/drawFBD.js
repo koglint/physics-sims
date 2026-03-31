@@ -65,7 +65,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
 
 function getForceLengths(bounds, state, physics) {
   const maxLength = Math.min(bounds.width, bounds.height) * 0.46;
-  const minLength = 56;
+  const minLength = 70;
 
   const scale = (value) => {
     if (!state.scaleVectorsByMagnitude) {
