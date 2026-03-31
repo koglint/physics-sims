@@ -11,6 +11,14 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const lengths = getForceLengths(bounds, state, physics);
   const planeNormal = { x: -Math.sin(angle), y: -Math.cos(angle) };
   const downslope = { x: Math.cos(angle), y: Math.sin(angle) };
+  const perpendicularVector = {
+    x: -planeNormal.x * lengths.perpendicular,
+    y: -planeNormal.y * lengths.perpendicular,
+  };
+  const parallelOrigin = {
+    x: origin.x + perpendicularVector.x,
+    y: origin.y + perpendicularVector.y,
+  };
 
   ctx.save();
   ctx.fillStyle = "#102a2a";
@@ -28,13 +36,13 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   drawConfiguredVector(ctx, origin, { x: 0, y: lengths.weight }, "weight", vectorMeta, "mg");
   drawConfiguredVector(ctx, origin, { x: planeNormal.x * lengths.normal, y: planeNormal.y * lengths.normal }, "normal", vectorMeta, "F_N");
   drawConfiguredVector(ctx, origin, { x: -downslope.x * lengths.friction, y: -downslope.y * lengths.friction }, "friction", vectorMeta, "F_f", -16);
-  drawConfiguredVector(ctx, origin, { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel }, "parallelComponent", vectorMeta, `mg sin ${THETA}`, -18);
+  drawConfiguredVector(ctx, parallelOrigin, { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel }, "parallelComponent", vectorMeta, `mg sin ${THETA}`, -18);
 
   if (vectorMeta.perpendicularComponent?.visible) {
     drawComponentVector(
       ctx,
       origin,
-      { x: planeNormal.x * lengths.perpendicular, y: planeNormal.y * lengths.perpendicular },
+      perpendicularVector,
       vectorMeta.perpendicularComponent.color,
       `mg cos ${THETA}`,
       18,

@@ -25,7 +25,11 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
   const normalVector = { x: planeNormal.x * lengths.normal, y: planeNormal.y * lengths.normal };
   const frictionVector = { x: -downslope.x * lengths.friction, y: -downslope.y * lengths.friction };
   const parallelVector = { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel };
-  const perpendicularVector = { x: planeNormal.x * lengths.perpendicular, y: planeNormal.y * lengths.perpendicular };
+  const perpendicularVector = { x: -planeNormal.x * lengths.perpendicular, y: -planeNormal.y * lengths.perpendicular };
+  const parallelOrigin = {
+    x: boxCenter.x + perpendicularVector.x,
+    y: boxCenter.y + perpendicularVector.y,
+  };
 
   drawSlopeBase(ctx, baseX, baseY, topX, topY, boxCenter, boxWidth, boxHeight, angle);
   drawLabel(ctx, "Slope view", width * 0.12, height * 0.12, {
@@ -37,7 +41,7 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
   drawConfiguredVector(ctx, boxCenter, weightVector, "weight", vectorMeta);
   drawConfiguredVector(ctx, boxCenter, normalVector, "normal", vectorMeta);
   drawConfiguredVector(ctx, boxCenter, frictionVector, "friction", vectorMeta);
-  drawConfiguredVector(ctx, boxCenter, parallelVector, "parallelComponent", vectorMeta);
+  drawConfiguredVector(ctx, parallelOrigin, parallelVector, "parallelComponent", vectorMeta);
 
   if (vectorMeta.perpendicularComponent?.visible) {
     drawComponentVector(ctx, boxCenter, perpendicularVector, vectorMeta.perpendicularComponent.color);
@@ -55,13 +59,13 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
     along: 0.52,
     normalOffset: 20,
   });
-  drawVectorLabel(ctx, boxCenter, parallelVector, vectorMeta.parallelComponent, `mg sin ${THETA}`, {
-    along: 0.78,
-    normalOffset: -22,
+  drawVectorLabel(ctx, parallelOrigin, parallelVector, vectorMeta.parallelComponent, `mg sin ${THETA}`, {
+    along: 0.58,
+    normalOffset: -18,
   });
   drawVectorLabel(ctx, boxCenter, perpendicularVector, vectorMeta.perpendicularComponent, `mg cos ${THETA}`, {
-    along: 0.44,
-    normalOffset: 28,
+    along: 0.55,
+    normalOffset: -24,
   });
 
   drawAngleArc(
