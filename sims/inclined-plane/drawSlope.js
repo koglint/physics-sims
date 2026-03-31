@@ -74,8 +74,8 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
       boxCenter.x,
       boxCenter.y,
       Math.max(26, lengths.weight * 0.18),
+      Math.PI / 2 - angle,
       Math.PI / 2,
-      Math.PI / 2 + angle,
       `${state.theta.toFixed(0)}${DEGREE}`,
       { labelOffset: 10 },
     );
