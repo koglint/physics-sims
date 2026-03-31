@@ -68,6 +68,19 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
     normalOffset: -24,
   });
 
+  if (vectorMeta.weight.visible && vectorMeta.perpendicularComponent.visible) {
+    drawAngleArc(
+      ctx,
+      boxCenter.x,
+      boxCenter.y,
+      Math.max(26, lengths.weight * 0.18),
+      Math.PI / 2,
+      Math.PI / 2 + angle,
+      `${state.theta.toFixed(0)}${DEGREE}`,
+      { labelOffset: 10 },
+    );
+  }
+
   drawAngleArc(
     ctx,
     baseX + 10,
