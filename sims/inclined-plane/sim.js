@@ -2,7 +2,6 @@ import { clearCanvas, fitCanvasToContainer } from "../../shared/canvasUtils.js";
 import { applyViewportMode, watchCanvasResize } from "../../shared/responsive.js";
 import { copyText, formatNumber, updateRangeValue } from "../../shared/ui.js";
 import { DIAGRAM_MODES, INCLINED_DEFAULTS, RANGE_CONFIG, VECTOR_DEFAULTS } from "./constants.js";
-import { drawComponentsView } from "./drawComponents.js";
 import { drawFBDView } from "./drawFBD.js";
 import { drawSlopeView } from "./drawSlope.js";
 import { createFormulaPanel } from "./formula.js";
@@ -273,12 +272,10 @@ function drawScene() {
   clearCanvas(ctx, width, height);
   drawBackground(ctx, width, height);
 
-  if (state.diagramMode === "slope") {
-    drawSlopeView(ctx, { width, height }, state, runtime.physics, state.vectors);
-  } else if (state.diagramMode === "fbd") {
+  if (state.diagramMode === "fbd") {
     drawFBDView(ctx, { width, height }, state, runtime.physics, state.vectors);
   } else {
-    drawComponentsView(ctx, { width, height }, state, runtime.physics, state.vectors);
+    drawSlopeView(ctx, { width, height }, state, runtime.physics, state.vectors);
   }
 }
 
@@ -323,10 +320,6 @@ function buildDiagramHint(mode) {
     return "Free-body view isolates the force vectors acting on the box.";
   }
 
-  if (mode === "components") {
-    return "Components view resolves weight into parts parallel and perpendicular to the slope.";
-  }
-
   return "Slope view shows the box resting on the plane with all active vectors.";
 }
 
@@ -348,7 +341,8 @@ function loadStateFromUrl() {
   });
 
   if (params.has("diagramMode")) {
-    state.diagramMode = params.get("diagramMode");
+    const requestedMode = params.get("diagramMode");
+    state.diagramMode = DIAGRAM_MODES.some((mode) => mode.value === requestedMode) ? requestedMode : "slope";
   }
 }
 

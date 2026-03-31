@@ -27,7 +27,6 @@ export const VECTOR_DEFAULTS = {
 export const DIAGRAM_MODES = [
   { value: "slope", label: "Slope View" },
   { value: "fbd", label: "Free-Body Diagram" },
-  { value: "components", label: "Components View" },
 ];
 
 export const SOLVE_OPTIONS = [

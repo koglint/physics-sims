@@ -1,6 +1,9 @@
 import { drawAngleArc, drawLabel } from "../../shared/canvasUtils.js";
 import { drawArrow } from "../../shared/vectors.js";
 
+const THETA = "\u03b8";
+const DEGREE = "\u00b0";
+
 export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
   const origin = { x: width * 0.44, y: height * 0.62 };
@@ -25,7 +28,7 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
   drawConfiguredVector(ctx, origin, { x: 0, y: lengths.weight }, "weight", vectorMeta, "mg");
   drawConfiguredVector(ctx, origin, { x: planeNormal.x * lengths.normal, y: planeNormal.y * lengths.normal }, "normal", vectorMeta, "F_N");
   drawConfiguredVector(ctx, origin, { x: -downslope.x * lengths.friction, y: -downslope.y * lengths.friction }, "friction", vectorMeta, "F_f", -16);
-  drawConfiguredVector(ctx, origin, { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel }, "parallelComponent", vectorMeta, "mg sin θ", -18);
+  drawConfiguredVector(ctx, origin, { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel }, "parallelComponent", vectorMeta, `mg sin ${THETA}`, -18);
 
   if (vectorMeta.perpendicularComponent?.visible) {
     drawComponentVector(
@@ -33,20 +36,28 @@ export function drawFBDView(ctx, bounds, state, physics, vectorMeta) {
       origin,
       { x: planeNormal.x * lengths.perpendicular, y: planeNormal.y * lengths.perpendicular },
       vectorMeta.perpendicularComponent.color,
-      "mg cos θ",
+      `mg cos ${THETA}`,
       18,
     );
   }
 
-  drawAngleArc(ctx, origin.x, origin.y, Math.max(28, lengths.normal * 0.34), -Math.PI / 2, -Math.PI / 2 + angle, `${state.theta.toFixed(0)}°`, {
-    labelOffset: 12,
-  });
+  drawAngleArc(
+    ctx,
+    origin.x,
+    origin.y,
+    Math.max(28, lengths.normal * 0.34),
+    -Math.PI / 2,
+    -Math.PI / 2 + angle,
+    `${state.theta.toFixed(0)}${DEGREE}`,
+    { labelOffset: 12 },
+  );
 }
 
 function getForceLengths(bounds, state, physics) {
   const maxLength = Math.min(bounds.width, bounds.height) * 0.32;
   const minLength = 36;
   const reference = Math.max(physics.weight, physics.normalForce, physics.parallelComponent, physics.frictionForce, 1);
+
   const scale = (value) => {
     if (!state.scaleVectorsByMagnitude) {
       return maxLength * 0.88;

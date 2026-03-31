@@ -1,6 +1,9 @@
 import { drawAngleArc, drawLabel } from "../../shared/canvasUtils.js";
 import { drawArrow } from "../../shared/vectors.js";
 
+const THETA = "\u03b8";
+const DEGREE = "\u00b0";
+
 export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
   const baseX = width * 0.18;
@@ -18,6 +21,11 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
   const lengths = getForceLengths(bounds, state, physics);
   const planeNormal = { x: -Math.sin(angle), y: -Math.cos(angle) };
   const downslope = { x: Math.cos(angle), y: Math.sin(angle) };
+  const weightVector = { x: 0, y: lengths.weight };
+  const normalVector = { x: planeNormal.x * lengths.normal, y: planeNormal.y * lengths.normal };
+  const frictionVector = { x: -downslope.x * lengths.friction, y: -downslope.y * lengths.friction };
+  const parallelVector = { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel };
+  const perpendicularVector = { x: planeNormal.x * lengths.perpendicular, y: planeNormal.y * lengths.perpendicular };
 
   drawSlopeBase(ctx, baseX, baseY, topX, topY, boxCenter, boxWidth, boxHeight, angle);
   drawLabel(ctx, "Slope view", width * 0.12, height * 0.12, {
@@ -26,16 +34,10 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
     weight: 700,
   });
 
-  const weightVector = { x: 0, y: lengths.weight };
-  const normalVector = { x: planeNormal.x * lengths.normal, y: planeNormal.y * lengths.normal };
-  const frictionVector = { x: -downslope.x * lengths.friction, y: -downslope.y * lengths.friction };
-  const parallelVector = { x: downslope.x * lengths.parallel, y: downslope.y * lengths.parallel };
-  const perpendicularVector = { x: planeNormal.x * lengths.perpendicular, y: planeNormal.y * lengths.perpendicular };
-
-  drawConfiguredVector(ctx, boxCenter, weightVector, "weight");
-  drawConfiguredVector(ctx, boxCenter, normalVector, "normal");
-  drawConfiguredVector(ctx, boxCenter, frictionVector, "friction");
-  drawConfiguredVector(ctx, boxCenter, parallelVector, "parallelComponent");
+  drawConfiguredVector(ctx, boxCenter, weightVector, "weight", vectorMeta);
+  drawConfiguredVector(ctx, boxCenter, normalVector, "normal", vectorMeta);
+  drawConfiguredVector(ctx, boxCenter, frictionVector, "friction", vectorMeta);
+  drawConfiguredVector(ctx, boxCenter, parallelVector, "parallelComponent", vectorMeta);
 
   if (vectorMeta.perpendicularComponent?.visible) {
     drawComponentVector(ctx, boxCenter, perpendicularVector, vectorMeta.perpendicularComponent.color);
@@ -46,25 +48,32 @@ export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
     normalOffset: -18,
   });
   drawVectorLabel(ctx, boxCenter, normalVector, vectorMeta.normal, "F_N", {
-    along: 0.76,
-    normalOffset: -24,
+    along: 0.74,
+    normalOffset: -22,
   });
   drawVectorLabel(ctx, boxCenter, frictionVector, vectorMeta.friction, "F_f", {
-    along: 0.5,
-    normalOffset: 22,
+    along: 0.52,
+    normalOffset: 20,
   });
-  drawVectorLabel(ctx, boxCenter, parallelVector, vectorMeta.parallelComponent, "mg sin θ", {
-    along: 0.8,
-    normalOffset: -24,
+  drawVectorLabel(ctx, boxCenter, parallelVector, vectorMeta.parallelComponent, `mg sin ${THETA}`, {
+    along: 0.78,
+    normalOffset: -22,
   });
-  drawVectorLabel(ctx, boxCenter, perpendicularVector, vectorMeta.perpendicularComponent, "mg cos θ", {
+  drawVectorLabel(ctx, boxCenter, perpendicularVector, vectorMeta.perpendicularComponent, `mg cos ${THETA}`, {
     along: 0.44,
     normalOffset: 28,
   });
 
-  drawAngleArc(ctx, baseX + 16, baseY - 2, Math.max(30, slopeLength * 0.12), -Math.PI / 2, -Math.PI / 2 + angle, `${state.theta.toFixed(0)}°`, {
-    labelOffset: 12,
-  });
+  drawAngleArc(
+    ctx,
+    baseX + 16,
+    baseY - 2,
+    Math.max(30, slopeLength * 0.12),
+    -Math.PI / 2,
+    -Math.PI / 2 + angle,
+    `${state.theta.toFixed(0)}${DEGREE}`,
+    { labelOffset: 12 },
+  );
 }
 
 function drawSlopeBase(ctx, baseX, baseY, topX, topY, boxCenter, boxWidth, boxHeight, angle) {
@@ -103,6 +112,7 @@ function getForceLengths(bounds, state, physics) {
   const maxLength = Math.min(bounds.width, bounds.height) * 0.28;
   const minLength = 34;
   const reference = Math.max(physics.weight, physics.normalForce, physics.parallelComponent, physics.frictionForce, 1);
+
   const scale = (value) => {
     if (!state.scaleVectorsByMagnitude) {
       return maxLength * 0.88;
