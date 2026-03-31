@@ -1,8 +1,10 @@
 import { drawAngleArc, drawLabel } from "../../shared/canvasUtils.js";
 import { drawArrow } from "../../shared/vectors.js";
+import { RANGE_CONFIG } from "./constants.js";
 
 const THETA = "\u03b8";
 const DEGREE = "\u00b0";
+const FORCE_REFERENCE = RANGE_CONFIG.mass.max * RANGE_CONFIG.g.max;
 
 export function drawSlopeView(ctx, bounds, state, physics, vectorMeta) {
   const { width, height } = bounds;
@@ -128,14 +130,13 @@ function drawSlopeBase(ctx, baseX, baseY, topX, topY, boxCenter, boxWidth, boxHe
 function getForceLengths(bounds, state, physics) {
   const maxLength = Math.min(bounds.width, bounds.height) * 0.28;
   const minLength = 34;
-  const reference = Math.max(physics.weight, physics.normalForce, physics.parallelComponent, physics.frictionForce, 1);
 
   const scale = (value) => {
     if (!state.scaleVectorsByMagnitude) {
       return maxLength * 0.88;
     }
 
-    const scaled = (Math.abs(value) / reference) * maxLength;
+    const scaled = (Math.abs(value) / FORCE_REFERENCE) * maxLength;
     return Math.min(maxLength, Math.max(minLength, scaled));
   };
 
